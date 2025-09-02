@@ -1,92 +1,66 @@
 ﻿using CSharpFunctionalExtensions;
+using PostBinar.Domain.ProjectMemberships;
 
-namespace PostBinar.Domain.Users
+namespace PostBinar.Domain.Users;
+
+public sealed class User : Abstraction.Entity<UserId>
 {
-    public sealed class User : Abstraction.Entity<UserId>
+    private User(
+        UserId id,
+        string firstName,
+        string lastName,
+        string email,
+        string passwordHash,
+        int specializationId)
+        : base(id)
     {
-        private User(
-            UserId id,
-            string firstName,
-            string lastName,
-            string email,
-            string passwordHash)
-            : base(id)
-        {
-            this.FirstName = firstName;
-            this.LastName = lastName;
-            this.Email = email;
-            this.PasswordHash = passwordHash;
-        }
-        protected User() { } //EF core
+        this.FirstName = firstName;
+        this.LastName = lastName;
+        this.Email = email;
+        this.PasswordHash = passwordHash;
+        this.SpecializationId = specializationId;
+    }
+    protected User() { } //EF core
 
-        public string FirstName { get; private set; }
-        public string LastName { get; private set; }
-        public string Email { get; private set; }
-        public string PasswordHash { get; private set; }
-        public Photo? ProfilePhoto { get; private set; }
-        public string? TelegramChatId { get; private set; }
-        public string FullName => $"{FirstName} {LastName}";
+    public string FirstName { get; set; } = null!;
+    public string LastName { get; set; } = null!;
+    public string FullName => $"{FirstName} {LastName}";
+    public string Email { get; set; } = null!;
+    public string PasswordHash { get; set; } = null!;
+    public int SpecializationId { get; set; }
+    public string? ProfilePhoto { get; set; }
+    public string? TgChatId { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
+    public DateTimeOffset UpdatedAt { get; set; }
 
-        public static Result<User> Create(
-            string firstName,
-            string lastName,
-            string email,
-            string passwordHash)
-        {
-            var validationResult = ValidateParameters(firstName, lastName, email, passwordHash);
+    // Navigation properties
+    public Specialization? Specialization { get; set; }
+    public ICollection<ProjectMembership> ProjectMemberships { get; set; } = new List<ProjectMembership>();
+    public ICollection<UserProjectRole> ProjectRoles { get; set; } = new List<UserProjectRole>();
 
-            if (validationResult.IsFailure)
-            {
-                return Result.Failure<User>(validationResult.Error);
-            }
+    
+    public static Result<User> Create(
+        string firstName,
+        string lastName,
+        string email,
+        string passwordHash,
+        int specializationId)
+    {
+        if (string.IsNullOrWhiteSpace(firstName))
+            return Result.Failure<User>("First name is required");
+        if (string.IsNullOrWhiteSpace(lastName))
+            return Result.Failure<User>("Last name is required");
+        if (string.IsNullOrWhiteSpace(email))
+            return Result.Failure<User>("Email is required");
+       
+        var user = new User(
+            UserId.New(),
+            firstName,
+            lastName,
+            email,
+            passwordHash,
+            specializationId);
 
-            var user = new User(
-                UserId.New(),
-                firstName,
-                lastName,
-                email,
-                passwordHash);
-
-            return Result.Success(user);
-        }
-
-        private static Result ValidateParameters(
-                string firstName,
-                string lastName,
-                string email,
-                string passwordHash)
-        {
-            if (string.IsNullOrWhiteSpace(firstName))
-                return Result.Failure("First name is required");
-
-            if (string.IsNullOrWhiteSpace(lastName))
-                return Result.Failure("Last name is required");
-
-            if (string.IsNullOrWhiteSpace(email))
-                return Result.Failure("Email is required");
-
-            if (!email.Contains("@"))
-                return Result.Failure("Invalid email format");
-
-            if (string.IsNullOrWhiteSpace(passwordHash))
-                return Result.Failure("Password hash is required");
-
-            return Result.Success();
-        }
-
-        public void SetProfilePhoto(Photo photo)
-        {
-            ArgumentNullException.ThrowIfNull(photo);
-            ArgumentNullException.ThrowIfNull(photo.Uri);
-
-            this.ProfilePhoto = photo;
-        }
-
-        public void SetTelegramChatId(string chatId)
-        {
-            ArgumentNullException.ThrowIfNull(chatId);
-
-            this.TelegramChatId = chatId;
-        }
+        return Result.Success(user);
     }
 }
