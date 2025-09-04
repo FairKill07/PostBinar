@@ -6,6 +6,7 @@ namespace PostBinar.Domain.ProjectMemberships;
 
 public sealed class ProjectMembership : Abstraction.Entity<ProjectMembershipId>
 {
+
     private ProjectMembership(
         ProjectMembershipId id,
         ProjectId projectId,

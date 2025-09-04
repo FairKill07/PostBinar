@@ -71,22 +71,6 @@ public sealed class Project : Abstraction.Entity<ProjectId>
         return Result.Success(project);
     }
 
-    public Result AddMember(UserId userId, int roleId)
-    {
-        if (userId == null || userId.Value == Guid.Empty)
-            return Result.Failure("User ID is required");
-        if (OwnerId == userId)
-            return Result.Failure("Owner is already a member");
-
-        var membership = ProjectMembership.Create(Id, userId);
-        if (membership.IsFailure)
-            return Result.Failure(membership.Error);
-
-        _members.Add(membership.Value);
-        UpdatedAt = DateTimeOffset.UtcNow;
-
-        return Result.Success();
-    }
     public Result Update(string name, string description)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -101,26 +85,75 @@ public sealed class Project : Abstraction.Entity<ProjectId>
         return Result.Success();
     }
 
-    public Result RemoveMember(UserId userId)
+    public Result AddMember(UserId userId)
     {
         if (userId == null || userId.Value == Guid.Empty)
             return Result.Failure("User ID is required");
 
+        if (_members.Any(m => m.UserId == userId))
+            return Result.Failure("User is already a member");
+
+        var membership = ProjectMembership.Create(Id, userId);
+        if (membership.IsFailure)
+            return Result.Failure(membership.Error);
+
+        _members.Add(membership.Value);
+        UpdatedAt = DateTimeOffset.UtcNow;
+
+        return Result.Success();
+    }
+
+    public Result RemoveMember(UserId userId)
+    {
         if (OwnerId == userId)
             return Result.Failure("Cannot remove project owner");
 
-        var membership = _members.FirstOrDefault(m => m.UserId == userId);
-        if (membership == null)
-            return Result.Failure("User is not a member of this project");
+        var member = _members.FirstOrDefault(m => m.UserId == userId);
+        if (member == null)
+            return Result.Failure("User is not a member");
 
-        var userRole = _userRoles.FirstOrDefault(ur => ur.UserId == userId);
+        _members.Remove(member);
 
-        _members.Remove(membership);
-        if (userRole != null)
+        var userRoles = _userRoles.Where(ur => ur.UserId == userId).ToList();
+        foreach (var role in userRoles)
         {
-            _userRoles.Remove(userRole);
+            _userRoles.Remove(role);
         }
 
+        UpdatedAt = DateTimeOffset.UtcNow;
+        return Result.Success();
+    }
+
+    public Result AssignRole(UserId userId, int roleId)
+    {
+        if (!_members.Any(m => m.UserId == userId))
+            return Result.Failure("User is not a member of this project");
+
+        if (_userRoles.Any(ur => ur.UserId == userId && ur.RoleId == roleId))
+            return Result.Failure("User already has this role");
+
+        var userRole = new UserProjectRole
+        {
+            Id = Guid.NewGuid(),
+            ProjectId = Id,
+            UserId = userId,
+            RoleId = roleId,
+            AssignedAt = DateTimeOffset.UtcNow
+        };
+
+        _userRoles.Add(userRole);
+        UpdatedAt = DateTimeOffset.UtcNow;
+
+        return Result.Success();
+    }
+
+    public Result RemoveRole(UserId userId, int roleId)
+    {
+        var userRole = _userRoles.FirstOrDefault(ur => ur.UserId == userId && ur.RoleId == roleId);
+        if (userRole == null)
+            return Result.Failure("User doesn't have this role");
+
+        _userRoles.Remove(userRole);
         UpdatedAt = DateTimeOffset.UtcNow;
 
         return Result.Success();
@@ -152,6 +185,7 @@ public sealed class Project : Abstraction.Entity<ProjectId>
         var userRole = _userRoles.FirstOrDefault(ur => ur.UserId == userId);
         return Result.Success(userRole?.Role);
     }
+
     public Result Deactivate()
     {
         if (!IsActive)
