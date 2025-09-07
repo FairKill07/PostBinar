@@ -1,5 +1,4 @@
 ﻿using CSharpFunctionalExtensions;
-using PostBinar.Domain.Authentication.Roles;
 using PostBinar.Domain.Notes;
 using PostBinar.Domain.ProjectMemberships;
 using PostBinar.Domain.TaskItems;
@@ -10,7 +9,6 @@ namespace PostBinar.Domain.Projects;
 public sealed class Project : Abstraction.Entity<ProjectId>
 {
     private readonly HashSet<ProjectMembership> _members = [];
-    private readonly HashSet<UserProjectRole> _userRoles = [];
     private readonly HashSet<TaskItem> _tasks = [];
     private readonly HashSet<Note> _notes = [];
 
@@ -27,7 +25,6 @@ public sealed class Project : Abstraction.Entity<ProjectId>
         Description = description;
         OwnerId = ownerId;
         CreatedAt = createdAt;
-        UpdatedAt = createdAt;
         IsActive = isActive;
     }
 
@@ -40,17 +37,15 @@ public sealed class Project : Abstraction.Entity<ProjectId>
     public DateTimeOffset CreatedAt { get; private set; }
     public DateTimeOffset UpdatedAt { get; private set; }
     public bool IsActive { get; private set; }
-
-    // Navigation
     public IReadOnlyCollection<ProjectMembership> Members => _members;
-    public IReadOnlyCollection<UserProjectRole> UserRoles => _userRoles;
     public IReadOnlyCollection<TaskItem> Tasks => _tasks;
     public IReadOnlyCollection<Note> Notes => _notes;
 
     public static Result<Project> Create(
         string name,
         string description,
-        UserId ownerId)
+        UserId ownerId,
+        DateTimeOffset createdAt)
     {
         if (string.IsNullOrWhiteSpace(name))
             return Result.Failure<Project>("Project name is required");
@@ -59,13 +54,12 @@ public sealed class Project : Abstraction.Entity<ProjectId>
         if (ownerId == null || ownerId.Value == Guid.Empty)
             return Result.Failure<Project>("Owner ID is required");
 
-        var now = DateTimeOffset.UtcNow;
         var project = new Project(
             ProjectId.New(),
             name,
             description,
             ownerId,
-            now,
+            createdAt,
             true);
 
         return Result.Success(project);
@@ -114,48 +108,7 @@ public sealed class Project : Abstraction.Entity<ProjectId>
 
         _members.Remove(member);
 
-        var userRoles = _userRoles.Where(ur => ur.UserId == userId).ToList();
-        foreach (var role in userRoles)
-        {
-            _userRoles.Remove(role);
-        }
-
         UpdatedAt = DateTimeOffset.UtcNow;
-        return Result.Success();
-    }
-
-    public Result AssignRole(UserId userId, int roleId)
-    {
-        if (!_members.Any(m => m.UserId == userId))
-            return Result.Failure("User is not a member of this project");
-
-        if (_userRoles.Any(ur => ur.UserId == userId && ur.RoleId == roleId))
-            return Result.Failure("User already has this role");
-
-        var userRole = new UserProjectRole
-        {
-            Id = Guid.NewGuid(),
-            ProjectId = Id,
-            UserId = userId,
-            RoleId = roleId,
-            AssignedAt = DateTimeOffset.UtcNow
-        };
-
-        _userRoles.Add(userRole);
-        UpdatedAt = DateTimeOffset.UtcNow;
-
-        return Result.Success();
-    }
-
-    public Result RemoveRole(UserId userId, int roleId)
-    {
-        var userRole = _userRoles.FirstOrDefault(ur => ur.UserId == userId && ur.RoleId == roleId);
-        if (userRole == null)
-            return Result.Failure("User doesn't have this role");
-
-        _userRoles.Remove(userRole);
-        UpdatedAt = DateTimeOffset.UtcNow;
-
         return Result.Success();
     }
 
@@ -172,18 +125,6 @@ public sealed class Project : Abstraction.Entity<ProjectId>
     public IEnumerable<UserId> GetMemberIds()
     {
         return _members.Select(m => m.UserId);
-    }
-
-    public Result<ProjectRole?> GetUserRole(UserId userId)
-    {
-        if (userId == null || userId.Value == Guid.Empty)
-            return Result.Failure<ProjectRole?>("User ID is required");
-
-        if (!IsMember(userId))
-            return Result.Failure<ProjectRole?>("User is not a member of this project");
-
-        var userRole = _userRoles.FirstOrDefault(ur => ur.UserId == userId);
-        return Result.Success(userRole?.Role);
     }
 
     public Result Deactivate()

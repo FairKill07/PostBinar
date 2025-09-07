@@ -1,5 +1,4 @@
 ﻿using CSharpFunctionalExtensions;
-using PostBinar.Domain.Authentication.Roles;
 using PostBinar.Domain.Categorys;
 using PostBinar.Domain.ProjectMemberships;
 
@@ -7,8 +6,7 @@ namespace PostBinar.Domain.Users;
 
 public sealed class User : Abstraction.Entity<UserId>
 {
-    private readonly HashSet<ProjectMembership> _projectMemberships = [];
-    private readonly HashSet<UserProjectRole> _projectRoles = [];
+    private readonly List<ProjectMembership> _projectMemberships = [];
 
     private User(
         UserId id,
@@ -37,15 +35,12 @@ public sealed class User : Abstraction.Entity<UserId>
     public string Email { get; private set; } = null!;
     public string PasswordHash { get; private set; } = null!;
     public int SpecializationId { get; private set; }
+    public Specialization Specialization { get; private set; }
     public string? ProfilePhoto { get; private set; }
     public string? TgChatId { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }
-    public DateTimeOffset UpdatedAt { get; private set; }
-
-    // Навигационные свойства
-    public Specialization? Specialization { get; private set; }
+    public DateTimeOffset? UpdatedAt { get; private set; }
     public IReadOnlyCollection<ProjectMembership> ProjectMemberships => _projectMemberships;
-    public IReadOnlyCollection<UserProjectRole> ProjectRoles => _projectRoles;
 
     public static Result<User> Create(
         string firstName,

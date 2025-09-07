@@ -39,11 +39,6 @@ public sealed class Note : Abstraction.Entity<NoteId>
     public DateTimeOffset CreatedAt { get; private set; }
     public DateTimeOffset UpdatedAt { get; private set; }
 
-    // Навигационные свойства
-    public Project Project { get; private set; } = null!;
-    public User Author { get; private set; } = null!;
-    public NoteCategory? Category { get; private set; }
-
     public static Result<Note> Create(
         ProjectId projectId,
         UserId authorId,

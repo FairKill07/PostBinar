@@ -44,8 +44,6 @@ public sealed class FileStorage : Abstraction.Entity<FileStorageId>
     public DateTimeOffset UpdatedAt { get; private set; }
     public bool IsActive { get; private set; }
 
-    // Навигация
-    public Project Project { get; private set; } = null!;
 
     public static Result<FileStorage> Create(
         ProjectId projectId,

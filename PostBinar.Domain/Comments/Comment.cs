@@ -39,10 +39,6 @@ public sealed class Comment : Abstraction.Entity<CommentId>
     public DateTimeOffset UpdatedAt { get; private set; }
     public bool IsActive { get; private set; }
 
-    // Навигация
-    public User Author { get; private set; } = null!;
-    public Project Project { get; private set; } = null!;
-
     public static Result<Comment> Create(
         UserId authorId,
         ProjectId projectId,

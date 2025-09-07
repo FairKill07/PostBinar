@@ -48,11 +48,6 @@ public sealed class TaskItem : Abstraction.Entity<TaskItemId>
     public DateTimeOffset UpdatedAt { get; private set; }
     public bool IsActive { get; private set; }
 
-    // Навигационные свойства
-    public User Author { get; private set; } = null!;
-    public Project Project { get; private set; } = null!;
-    public TaskCategory? Category { get; private set; }
-
     public static Result<TaskItem> Create(
         ProjectId projectId,
         UserId authorId,
