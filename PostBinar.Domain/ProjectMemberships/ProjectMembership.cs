@@ -1,5 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
-using PostBinar.Domain.Authentication;
+using PostBinar.Domain.Authorization;
 using PostBinar.Domain.Projects;
 using PostBinar.Domain.Users;
 
@@ -23,7 +23,9 @@ public sealed class ProjectMembership : Abstraction.Entity<ProjectMembershipId>
     protected ProjectMembership() { }
 
     public ProjectId ProjectId { get; private set; }
+    public Project Project { get; private set; } = null!;
     public UserId UserId { get; private set; }
+    public User User { get; private set; } = null!;
     public DateTimeOffset JoinedAt { get; private set; }
     public IReadOnlyCollection<RoleEntity> Roles => _roles;
 

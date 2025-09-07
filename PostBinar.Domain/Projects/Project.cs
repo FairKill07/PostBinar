@@ -8,9 +8,9 @@ namespace PostBinar.Domain.Projects;
 
 public sealed class Project : Abstraction.Entity<ProjectId>
 {
-    private readonly HashSet<ProjectMembership> _members = [];
+    private readonly List<ProjectMembership> _projectMemberships = [];
     private readonly HashSet<TaskItem> _tasks = [];
-    private readonly HashSet<Note> _notes = [];
+    private readonly HashSet<Note> _notes = []; 
 
     private Project(
         ProjectId id,
@@ -37,7 +37,7 @@ public sealed class Project : Abstraction.Entity<ProjectId>
     public DateTimeOffset CreatedAt { get; private set; }
     public DateTimeOffset UpdatedAt { get; private set; }
     public bool IsActive { get; private set; }
-    public IReadOnlyCollection<ProjectMembership> Members => _members;
+    public IReadOnlyCollection<ProjectMembership> ProjectMemberships => _projectMemberships;
     public IReadOnlyCollection<TaskItem> Tasks => _tasks;
     public IReadOnlyCollection<Note> Notes => _notes;
 
@@ -84,14 +84,14 @@ public sealed class Project : Abstraction.Entity<ProjectId>
         if (userId == null || userId.Value == Guid.Empty)
             return Result.Failure("User ID is required");
 
-        if (_members.Any(m => m.UserId == userId))
+        if (_projectMemberships.Any(m => m.UserId == userId))
             return Result.Failure("User is already a member");
 
         var membership = ProjectMembership.Create(Id, userId);
         if (membership.IsFailure)
             return Result.Failure(membership.Error);
 
-        _members.Add(membership.Value);
+        _projectMemberships.Add(membership.Value);
         UpdatedAt = DateTimeOffset.UtcNow;
 
         return Result.Success();
@@ -102,11 +102,11 @@ public sealed class Project : Abstraction.Entity<ProjectId>
         if (OwnerId == userId)
             return Result.Failure("Cannot remove project owner");
 
-        var member = _members.FirstOrDefault(m => m.UserId == userId);
+        var member = _projectMemberships.FirstOrDefault(m => m.UserId == userId);
         if (member == null)
             return Result.Failure("User is not a member");
 
-        _members.Remove(member);
+        _projectMemberships.Remove(member);
 
         UpdatedAt = DateTimeOffset.UtcNow;
         return Result.Success();
@@ -114,7 +114,7 @@ public sealed class Project : Abstraction.Entity<ProjectId>
 
     public bool IsMember(UserId userId)
     {
-        return _members.Any(m => m.UserId == userId);
+        return _projectMemberships.Any(m => m.UserId == userId);
     }
 
     public bool IsOwner(UserId userId)
@@ -124,7 +124,7 @@ public sealed class Project : Abstraction.Entity<ProjectId>
 
     public IEnumerable<UserId> GetMemberIds()
     {
-        return _members.Select(m => m.UserId);
+        return _projectMemberships.Select(m => m.UserId);
     }
 
     public Result Deactivate()

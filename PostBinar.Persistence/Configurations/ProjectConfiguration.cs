@@ -4,7 +4,7 @@ using PostBinar.Domain.Projects;
 
 namespace PostBinar.Persistence.Configurations;
 
-public sealed class ProjectConfiguration : IEntityTypeConfiguration<Project>
+internal sealed class ProjectConfiguration : IEntityTypeConfiguration<Project>
 {
     public void Configure(EntityTypeBuilder<Project> builder)
     {
@@ -28,7 +28,5 @@ public sealed class ProjectConfiguration : IEntityTypeConfiguration<Project>
         builder
             .Property(p => p.UpdatedAt)
             .IsRequired(false);
-
-        builder
     }
 }

@@ -1,0 +1,6 @@
+@PostBinar.Api_HostAddress = http://localhost:5087
+
+GET {{PostBinar.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

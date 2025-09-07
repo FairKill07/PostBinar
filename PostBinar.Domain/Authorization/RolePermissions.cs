@@ -1,4 +1,4 @@
-﻿namespace PostBinar.Domain.Authentication;
+﻿namespace PostBinar.Domain.Authorization;
 
 public sealed class RolePermissions
 {

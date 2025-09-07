@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostBinar.Infrastructure", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostBinar.Persistence", "PostBinar.Persistence\PostBinar.Persistence.csproj", "{9DBE2CF4-250B-408C-8EB4-843EF75A1D27}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostBinar.Api", "PostBinar.Api\PostBinar.Api.csproj", "{3DE7A8B7-E105-41DF-BA78-C5C27128A243}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{9DBE2CF4-250B-408C-8EB4-843EF75A1D27}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DBE2CF4-250B-408C-8EB4-843EF75A1D27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DBE2CF4-250B-408C-8EB4-843EF75A1D27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DE7A8B7-E105-41DF-BA78-C5C27128A243}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DE7A8B7-E105-41DF-BA78-C5C27128A243}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DE7A8B7-E105-41DF-BA78-C5C27128A243}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DE7A8B7-E105-41DF-BA78-C5C27128A243}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

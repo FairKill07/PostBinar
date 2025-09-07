@@ -65,6 +65,10 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
             .HasForeignKey(u => u.SpecializationId)
             .IsRequired();
 
-
+        builder
+            .HasMany(u => u.ProjectMemberships)
+            .WithOne(pm => pm.User)
+            .HasForeignKey(pm => pm.UserId)
+            .IsRequired();
     }
 }
