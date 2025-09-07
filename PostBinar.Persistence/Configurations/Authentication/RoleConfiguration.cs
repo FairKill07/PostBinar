@@ -17,7 +17,7 @@ public sealed class RoleConfiguration : IEntityTypeConfiguration<RoleEntity>
         builder
             .HasMany(r => r.Permissions)
             .WithMany(u => u.Roles)
-            .UsingEntity<RolePermissions>(
+            .UsingEntity<RolePermissionsEntity>(
                 l => l.HasOne<PermissionEntity>().WithMany().HasForeignKey(p => p.PermissionId),
                 r => r.HasOne<RoleEntity>().WithMany().HasForeignKey(ur => ur.RoleId));
 

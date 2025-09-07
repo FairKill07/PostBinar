@@ -26,7 +26,6 @@ internal sealed class ProjectConfiguration : IEntityTypeConfiguration<Project>
             .Property(p => p.CreatedAt)
             .IsRequired();
         builder
-            .Property(p => p.UpdatedAt)
-            .IsRequired(false);
+            .Property(p => p.UpdatedAt);
     }
 }
