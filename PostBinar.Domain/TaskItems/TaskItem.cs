@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using PostBinar.Domain.Categorys;
+using PostBinar.Domain.Comments;
 using PostBinar.Domain.Enums;
 using PostBinar.Domain.Projects;
 using PostBinar.Domain.Users;
@@ -8,6 +9,8 @@ namespace PostBinar.Domain.TaskItems;
 
 public sealed class TaskItem : Abstraction.Entity<TaskItemId>
 {
+    private readonly List<Comment> _comments = [];
+
     private TaskItem(
         TaskItemId id,
         ProjectId projectId,
@@ -47,6 +50,7 @@ public sealed class TaskItem : Abstraction.Entity<TaskItemId>
     public DateTimeOffset CreatedAt { get; private set; }
     public DateTimeOffset UpdatedAt { get; private set; }
     public bool IsActive { get; private set; }
+    public IReadOnlyCollection<Comment> Comments => _comments;
 
     public static Result<TaskItem> Create(
         ProjectId projectId,

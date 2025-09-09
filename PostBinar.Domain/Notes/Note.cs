@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
 using PostBinar.Domain.Categorys;
+using PostBinar.Domain.Comments;
 using PostBinar.Domain.Projects;
 using PostBinar.Domain.Users;
 
@@ -7,12 +8,13 @@ namespace PostBinar.Domain.Notes;
 
 public sealed class Note : Abstraction.Entity<NoteId>
 {
+    private readonly List<Comment> _comments = [];
     private Note(
         NoteId id,
         ProjectId projectId,
         UserId authorId,
         string title,
-        string? description,
+        string? content,
         int? categoryId,
         DateTimeOffset createdAt)
         : base(id)
@@ -20,7 +22,7 @@ public sealed class Note : Abstraction.Entity<NoteId>
         ProjectId = projectId;
         AuthorId = authorId;
         Title = title;
-        Description = description;
+        Content = content;
         CategoryId = categoryId;
         CreatedAt = createdAt;
         UpdatedAt = createdAt;
@@ -33,17 +35,18 @@ public sealed class Note : Abstraction.Entity<NoteId>
     public ProjectId ProjectId { get; private set; }
     public UserId AuthorId { get; private set; }
     public string Title { get; private set; } = null!;
-    public string? Description { get; private set; }
+    public string? Content { get; private set; }
     public int? CategoryId { get; private set; }
     public bool IsActive { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }
     public DateTimeOffset UpdatedAt { get; private set; }
+    public IReadOnlyCollection<Comment> Comments => _comments;
 
     public static Result<Note> Create(
         ProjectId projectId,
         UserId authorId,
         string title,
-        string? description,
+        string? content,
         int? categoryId)
     {
         if (projectId == null || projectId.Value == Guid.Empty)
@@ -59,7 +62,7 @@ public sealed class Note : Abstraction.Entity<NoteId>
             projectId,
             authorId,
             title,
-            description,
+            content,
             categoryId,
             now);
 
@@ -68,14 +71,14 @@ public sealed class Note : Abstraction.Entity<NoteId>
 
     public Result Update(
         string title,
-        string? description,
+        string? content,
         int? categoryId)
     {
         if (string.IsNullOrWhiteSpace(title))
             return Result.Failure("Title is required");
 
         Title = title;
-        Description = description;
+        Content = content;
         CategoryId = categoryId;
         UpdatedAt = DateTimeOffset.UtcNow;
 

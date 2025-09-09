@@ -9,7 +9,6 @@ using PostBinar.Domain.ProjectMemberships;
 using PostBinar.Domain.Projects;
 using PostBinar.Domain.TaskItems;
 using PostBinar.Domain.Users;
-using PostBinar.Infrastructure.Authorization;
 using PostBinar.Persistence.Configurations.Authentication;
 
 namespace PostBinar.Persistence.DbContects;
@@ -21,7 +20,6 @@ public sealed class PostBinarDbContext : DbContext, IPostBinarDbContext, IUnitOf
     public PostBinarDbContext(DbContextOptions<PostBinarDbContext> options , IOptions<AuthorizationOptions> authOptions) : base(options)
     {
         this.authOptions = authOptions;
-
     }
 
     public DbSet<User> Users => Set<User>();
