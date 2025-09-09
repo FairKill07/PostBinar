@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PostBinar.Domain.Projects;
 using PostBinar.Domain.TaskItems;
+using PostBinar.Domain.Users;
 
 namespace PostBinar.Persistence.Configurations;
 
@@ -24,6 +25,11 @@ internal sealed class TaskItemConfiguration : IEntityTypeConfiguration<TaskItem>
             .HasConversion(id => id.Value, value => new ProjectId(value))
             .IsRequired();
         
+        builder
+            .Property(t => t.AuthorId)
+            .HasConversion(id => id.Value, value => new UserId(value))
+            .IsRequired();
+
         builder
             .Property(t => t.Title)
             .IsRequired()
@@ -62,7 +68,5 @@ internal sealed class TaskItemConfiguration : IEntityTypeConfiguration<TaskItem>
             .HasForeignKey(t => t.ProjectId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder
-            .HasI
     }
 }

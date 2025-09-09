@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PostBinar.Domain.Notes;
+using PostBinar.Domain.Users;
 
 namespace PostBinar.Persistence.Configurations;
 
@@ -17,6 +18,11 @@ internal sealed class NoteConfiguration : IEntityTypeConfiguration<Note>
             .Property(n => n.Id)
             .HasConversion(id => id.Value, value => new NoteId(value))
             .ValueGeneratedNever();
+
+        builder
+            .Property(n => n.AuthorId)
+            .HasConversion(id => id.Value, value => new UserId(value))
+            .IsRequired();
 
         builder
             .Property(n => n.Title)
