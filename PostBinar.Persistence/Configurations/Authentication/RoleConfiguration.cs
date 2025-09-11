@@ -9,6 +9,8 @@ public sealed class RoleConfiguration : IEntityTypeConfiguration<RoleEntity>
 {
     public void Configure(EntityTypeBuilder<RoleEntity> builder)
     {
+        builder.ToTable("roles");
+
         builder.HasKey(r => r.Id);
         builder
             .Property(r => r.Name)

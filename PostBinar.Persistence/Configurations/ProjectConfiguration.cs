@@ -60,9 +60,6 @@ internal sealed class ProjectConfiguration : IEntityTypeConfiguration<Project>
             .WithOne()
             .HasForeignKey(n => n.ProjectId);
 
-        
-        
-
         builder.HasIndex(p => p.IsActive);
         builder.HasIndex(p => p.OwnerId);
     }

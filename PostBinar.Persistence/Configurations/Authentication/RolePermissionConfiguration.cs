@@ -5,16 +5,14 @@ using PostBinar.Domain.Enums;
 
 namespace PostBinar.Persistence.Configurations.Authentication;
 
-public sealed class RolePermissionConfiguration : IEntityTypeConfiguration<RolePermissionsEntity>
+public sealed class RolePermissionConfiguration(AuthorizationOptions options) : IEntityTypeConfiguration<RolePermissionsEntity>
 {
-    private readonly AuthorizationOptions _options;
-    public RolePermissionConfiguration(AuthorizationOptions options)
-    {
-        _options = options;
-    }
+    private readonly AuthorizationOptions _options = options;
 
     public void Configure(EntityTypeBuilder<RolePermissionsEntity> builder)
     {
+        builder.ToTable("role_permissions");
+
         builder.HasKey(rp => new { rp.RoleId, rp.PermissionId });
         builder.HasData(ParseRolePermission());
     }

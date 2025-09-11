@@ -39,12 +39,16 @@ internal sealed class TaskItemConfiguration : IEntityTypeConfiguration<TaskItem>
             .Property(t => t.Description)
             .IsRequired()
             .HasMaxLength(2000);
-       
+
         builder
             .Property(t => t.Status)
             .IsRequired()
             .HasConversion<string>();
-        
+
+        builder
+            .Property(t => t.CategoryId)
+            .IsRequired(false);
+
         builder
             .Property(t => t.Priority)
             .IsRequired()

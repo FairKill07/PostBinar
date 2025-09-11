@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PostBinar.Domain.ProjectMemberships;
 using PostBinar.Domain.Projects;
 using PostBinar.Domain.Users;
@@ -7,7 +8,7 @@ namespace PostBinar.Persistence.Configurations;
 
 internal sealed class ProjectMembershipConfiguration : IEntityTypeConfiguration<ProjectMembership>
 {
-    public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<ProjectMembership> builder)
+    public void Configure(EntityTypeBuilder<ProjectMembership> builder)
     {
         builder.ToTable("project_memberships");
 
@@ -30,19 +31,7 @@ internal sealed class ProjectMembershipConfiguration : IEntityTypeConfiguration<
             .IsRequired();
 
         builder
-            .HasMany(r => r.Roles)
-            .WithOne()
-            .HasForeignKey(re => re.Id)
+            .Property(pm => pm.JoinedAt)
             .IsRequired();
-        
-        builder
-            .HasOne(pm => pm.Project)
-            .WithMany(p => p.ProjectMemberships)
-            .HasForeignKey(pm => pm.ProjectId);
-
-        builder
-            .HasOne(pm => pm.User)
-            .WithMany(u => u.ProjectMemberships)
-            .HasForeignKey(pm => pm.UserId);
     }
 }

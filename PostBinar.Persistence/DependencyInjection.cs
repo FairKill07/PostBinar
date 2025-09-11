@@ -15,9 +15,7 @@ namespace PostBinar.Persistence
                 var connectionString = configuration.GetConnectionString("DbConnection");
                 options.UseNpgsql(
                     connectionString,
-                    b => b.MigrationsAssembly("Persistence"));
-
-
+                    b => b.MigrationsAssembly("PostBinar.Persistence"));
             });
 
             services.AddScoped<IUnitOfWork>(serviceProvider =>

@@ -36,8 +36,16 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
             .IsRequired();
 
         builder
+            .Property(u => u.SpecializationId);
+
+        builder
             .Property(u => u.ProfilePhoto)
             .HasMaxLength(1000)
+            .IsRequired(false);
+
+        builder
+            .Property(u => u.TgChatId)
+            .HasMaxLength(100)
             .IsRequired(false);
 
         builder
@@ -47,17 +55,9 @@ internal sealed class UserConfiguration : IEntityTypeConfiguration<User>
         builder
             .Property(u => u.UpdatedAt)
             .IsRequired(false);
-        
-        builder
-            .Property(u => u.TgChatId)
-            .HasMaxLength(100)
-            .IsRequired(false);
 
 
         builder.HasIndex(u => u.Email).IsUnique();
-
-        builder
-            .Property(u => u.SpecializationId);
 
         builder
             .HasOne(u => u.Specialization)

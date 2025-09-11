@@ -7,7 +7,7 @@ namespace PostBinar.Domain.ProjectMemberships;
 
 public sealed class ProjectMembership : Abstraction.Entity<ProjectMembershipId>
 {
-    private readonly List<RoleEntity> _roles = [];
+    private readonly List<ProjectRole> _roles = [];
     private ProjectMembership(
         ProjectMembershipId id,
         ProjectId projectId,
@@ -25,9 +25,9 @@ public sealed class ProjectMembership : Abstraction.Entity<ProjectMembershipId>
     public ProjectId ProjectId { get; private set; }
     public Project Project { get; private set; } = null!;
     public UserId UserId { get; private set; }
-    public User User { get; private set; } = null!;
+    public User User { get; private  set; } = null!;
     public DateTimeOffset JoinedAt { get; private set; }
-    public IReadOnlyCollection<RoleEntity> Roles => _roles;
+    public IReadOnlyCollection<ProjectRole> Roles => _roles;
 
 
     public static Result<ProjectMembership> Create(ProjectId projectId, UserId userId)
