@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Repositories\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\PostBinar.Application\PostBinar.Application.csproj" />
     <ProjectReference Include="..\PostBinar.Infrastructure\PostBinar.Infrastructure.csproj" />
   </ItemGroup>
