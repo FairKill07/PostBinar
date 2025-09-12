@@ -38,8 +38,54 @@ public sealed class JwtProvider : IJwtProvider
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    public bool ValidateToken(string token, out string userId, out string email, out string name, out string phoneNumber)
+    public bool ValidateToken(string token, out Guid userId, out string email, out string fullName)
     {
-        throw new NotImplementedException();
+        userId = Guid.Empty;
+        email = string.Empty;
+        fullName = string.Empty;
+
+        var tokenHandler = new JwtSecurityTokenHandler();
+        var validationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = "https://your-issuer.com",
+
+            ValidateAudience = true,
+            ValidAudience = "your-audience",
+
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero,
+
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_options.SecretKey))
+        };
+
+        try
+        {
+            var principal = tokenHandler.ValidateToken(token, validationParameters, out var validatedToken);
+
+            if (validatedToken is not JwtSecurityToken jwtToken)
+                return false;
+
+            var subClaim = principal.FindFirst(ClaimTypes.NameIdentifier) ?? principal.FindFirst("sub");
+            
+            if (subClaim != null && Guid.TryParse(subClaim.Value, out var parsedId))
+                userId = parsedId;
+
+            email = principal.FindFirst(ClaimTypes.Email)?.Value
+                     ?? principal.FindFirst("email")?.Value
+                     ?? string.Empty;
+
+            fullName = principal.FindFirst(ClaimTypes.Name)?.Value
+                       ?? principal.FindFirst("name")?.Value
+                       ?? string.Empty;
+
+            return true;
+        }
+        catch
+        {
+            return false;
+        }
     }
 }
