@@ -47,8 +47,7 @@ public sealed class User : Abstraction.Entity<UserId>
         string lastName,
         string email,
         string passwordHash,
-        int specializationId,
-        DateTimeOffset createdAt)
+        int specializationId)
     {
         if (string.IsNullOrWhiteSpace(firstName))
             return Result.Failure<User>("First name is required");

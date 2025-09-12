@@ -1,4 +1,5 @@
-﻿using PostBinar.Application.Abstractions.Interfaces;
+﻿using System.Xml.Linq;
+using PostBinar.Application.Abstractions.Interfaces;
 using PostBinar.Application.Abstractions.Interfaces.Service;
 using PostBinar.Application.Repositories;
 using PostBinar.Domain.Users;
@@ -20,13 +21,27 @@ public sealed class UserService : IUserService
         _jwtProvider = jwtProvider;
     }
 
-    public Task<string> Login(string email, string password)
+    public async Task<string> Login(string email, string password)
     {
-        throw new NotImplementedException();
+        var user = await _userRepository.GetByEmailAsync(email);
+
+        var result = _passwordHasher.VerifyHashedPassword(user.PasswordHash, password);
+
+        var token = _jwtProvider.GenerateToken(user);
+
+        return token;
     }
 
-    public Task<UserId> Register(string firstName, string lastName, string email, string passwordHash, int specializationId)
+    public async Task<UserId> Register(string firstName, string lastName, string email, string password, int specializationId)
     {
-        throw new NotImplementedException();
+        var hashPassword = _passwordHasher.HashPasssword(password);
+
+        var user = User.Create(firstName, lastName, email, password, specializationId);
+
+        _userRepository.Add(user.Value);
+
+        await _unitOfWork.SaveChangesAsync();
+
+        return user.Value.Id;
     }
 }

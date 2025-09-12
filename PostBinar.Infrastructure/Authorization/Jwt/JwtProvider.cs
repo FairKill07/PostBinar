@@ -17,13 +17,12 @@ public sealed class JwtProvider : IJwtProvider
     }
     public string GenerateToken(User user)
     {
-        Claim[] claims = new[]
+        Claim[] claims = new Claim[]
         {
-        new Claim("UserId", user.Id.Value.ToString()),
-        new Claim("Admin", "true"),
-        new Claim("Email", user.Email.ToString())
-    };
-
+            new("UserId", user.Id.Value.ToString()),
+            new("Email", user.Email.ToString()),
+            new("FullName", user.FullName.ToString()),
+        };
 
         var signingCredentials = new SigningCredentials(
             new SymmetricSecurityKey(

@@ -9,7 +9,7 @@ public interface IUserService
         string firstName , 
         string lastName, 
         string email, 
-        string passwordHash, 
+        string password, 
         int specializationId);
     Task<string> Login(string email, string password);
 }
