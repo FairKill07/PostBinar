@@ -44,8 +44,7 @@ public sealed class Project : Abstraction.Entity<ProjectId>
     public static Result<Project> Create(
         string name,
         string description,
-        UserId ownerId,
-        DateTimeOffset createdAt)
+        UserId ownerId)
     {
         if (string.IsNullOrWhiteSpace(name))
             return Result.Failure<Project>("Project name is required");
@@ -59,7 +58,7 @@ public sealed class Project : Abstraction.Entity<ProjectId>
             name,
             description,
             ownerId,
-            createdAt,
+            DateTimeOffset.UtcNow,
             true);
 
         return Result.Success(project);

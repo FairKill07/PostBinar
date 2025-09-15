@@ -35,7 +35,7 @@ public sealed class UserService : IUserService
     {
         var hashPassword = _passwordHasher.HashPasssword(password);
 
-        var user = User.Create(firstName, lastName, email, password, specializationId);
+        var user = User.Create(firstName, lastName, email, hashPassword, specializationId);
 
         _userRepository.Add(user.Value);
 

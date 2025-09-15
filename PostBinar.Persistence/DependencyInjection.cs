@@ -14,6 +14,7 @@ public static class DependencyInjection
     {
         //Services
         services.AddTransient<IUserRepository, UserRepository>();
+        services.AddTransient<IProjectRepository, ProjectRepository>();
 
         services.AddDbContext<PostBinarDbContext>(options =>
         {
