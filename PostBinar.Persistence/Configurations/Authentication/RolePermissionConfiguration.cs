@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PostBinar.Domain.Authorization;
 using PostBinar.Domain.Enums;
+using PostBinar.Infrastructure.Authorization;
 
 namespace PostBinar.Persistence.Configurations.Authentication;
 

@@ -9,6 +9,7 @@ using PostBinar.Domain.ProjectMemberships;
 using PostBinar.Domain.Projects;
 using PostBinar.Domain.TaskItems;
 using PostBinar.Domain.Users;
+using PostBinar.Infrastructure.Authorization;
 using PostBinar.Persistence.Configurations.Authentication;
 
 namespace PostBinar.Persistence.DbContects;

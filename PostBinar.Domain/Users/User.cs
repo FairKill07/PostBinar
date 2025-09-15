@@ -65,7 +65,7 @@ public sealed class User : Abstraction.Entity<UserId>
             email,
             passwordHash,
             specializationId,
-            createdAt);
+            DateTimeOffset.UtcNow);
 
         return Result.Success(user);
     }

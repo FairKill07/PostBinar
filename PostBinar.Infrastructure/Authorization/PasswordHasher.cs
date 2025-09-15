@@ -2,7 +2,7 @@
 
 namespace PostBinar.Infrastructure.Authorization;
 
-public sealed class PassworHasher : IPasswordHasher
+public sealed class PasswordHasher : IPasswordHasher
 {
     public string HashPasssword(string password)
     {
