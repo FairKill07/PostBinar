@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using FluentValidation;
 
-namespace PostBinar.Application.Users.Commands.LogIn
+namespace PostBinar.Application.Users.Commands.LogIn;
+
+public sealed class LogInCommandValidator : AbstractValidator<LogInCommand>
 {
-    class LogInCommandValidator
+    public LogInCommandValidator()
     {
+        RuleFor(logInCommand =>
+            logInCommand.Email).NotEmpty().EmailAddress().MaximumLength(100);
+        RuleFor(logInCommand =>
+            logInCommand.Password).NotEmpty().MinimumLength(6).MaximumLength(100);
     }
 }
