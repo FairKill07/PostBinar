@@ -1,7 +1,6 @@
-﻿using System.Xml.Linq;
-using PostBinar.Application.Abstractions.Interfaces;
+﻿using PostBinar.Application.Abstractions.Interfaces;
+using PostBinar.Application.Abstractions.Interfaces.Repositories;
 using PostBinar.Application.Abstractions.Interfaces.Service;
-using PostBinar.Application.Repositories;
 using PostBinar.Domain.Users;
 
 namespace PostBinar.Application.Services;

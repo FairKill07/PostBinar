@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using PostBinar.Application.Repositories;
+using PostBinar.Application.Abstractions.Interfaces.Repositories;
 using PostBinar.Domain.Users;
 using PostBinar.Persistence.DbContects;
 
