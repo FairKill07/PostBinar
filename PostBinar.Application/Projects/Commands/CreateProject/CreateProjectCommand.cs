@@ -4,7 +4,7 @@ using PostBinar.Domain.Users;
 
 namespace PostBinar.Application.Projects.Commands.CreateProject;
 
-public sealed record CreateProjactCommand (
+public sealed record CreateProjectCommand (
     string Name, 
     string Description, 
     UserId OwnerId) 

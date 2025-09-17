@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using PostBinar.Application.Users.Commands.LogIn;
 using PostBinar.Application.Users.Commands.Register;
 
 namespace PostBinar.Api.Controllers.Users
@@ -25,6 +26,20 @@ namespace PostBinar.Api.Controllers.Users
             );
 
             return Ok(await _mediator.Send(command));
+        }
+        [HttpPost]
+        public async Task<IActionResult> Login([FromBody] LogInUserRequest request, CancellationToken cancellationToken)
+        {
+            var command = new LogInCommand(
+                Email: request.Email,
+                Password: request.Password
+            );
+
+            var token = await _mediator.Send(command);
+
+            HttpContext.Response.Cookies.Append("Cookies-PostBinar", token);
+
+            return Ok(token);
         }
     }
 }

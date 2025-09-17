@@ -1,0 +1,395 @@
+@startuml
+
+!theme plain
+top to bottom direction
+skinparam linetype ortho
+
+rectangle AuthorizationOptions
+rectangle BaseController
+rectangle Comment
+rectangle CommentConfiguration
+rectangle CommentId
+rectangle CommentObjectType
+rectangle ConfigsCategoryTable
+rectangle CreateProjactCommand
+rectangle CreateProjactCommandHandler
+rectangle CreateProjactCommandValidator
+rectangle DependencyInjection
+rectangle DependencyInjection
+rectangle DependencyInjection
+rectangle Entity
+rectangle FileStorage
+rectangle FileStorageConfiguration
+rectangle FileStorageId
+rectangle IJwtProvider
+rectangle IPasswordHasher
+rectangle IPostBinarDbContext
+rectangle IProjectRepository
+rectangle IProjectService
+rectangle ISqlConnectionFactory
+rectangle IUnitOfWork
+rectangle IUserRepository
+rectangle IUserService
+rectangle InitialCreate
+rectangle JwtOptions
+rectangle JwtProvider
+rectangle LogInCommand
+rectangle LogInCommandHandler
+rectangle LogInCommandValidator
+rectangle Note
+rectangle NoteCategory
+rectangle NoteCategoryConfiguration
+rectangle NoteConfiguration
+rectangle NoteId
+rectangle PasswordHasher
+rectangle Permission
+rectangle PermissionConfiguration
+rectangle PermissionEntity
+rectangle PostBinarDbContext
+rectangle PostBinarDbContextModelSnapshot
+rectangle Project
+rectangle ProjectConfiguration
+rectangle ProjectId
+rectangle ProjectMembership
+rectangle ProjectMembershipConfiguration
+rectangle ProjectMembershipId
+rectangle ProjectMembershipRoleConfiguration
+rectangle ProjectRepository
+rectangle ProjectRole
+rectangle ProjectService
+rectangle RegisterCommand
+rectangle RegisterCommandValidator
+rectangle RegisterCommnadHandler
+rectangle RegisterUserRequest
+rectangle Repository
+rectangle Role
+rectangle RoleConfiguration
+rectangle RoleEntity
+rectangle RolePermission
+rectangle RolePermissionConfiguration
+rectangle RolePermissionsEntity
+rectangle RoleUpdate
+rectangle Specialization
+rectangle SpecializationConfiguration
+rectangle Startup
+rectangle StorageObjectType
+rectangle TaskCategory
+rectangle TaskCategoryConfigurations
+rectangle TaskItem
+rectangle TaskItemConfiguration
+rectangle TaskItemId
+rectangle TaskItemPriority
+rectangle TaskItemStatus
+rectangle TestMigrations
+rectangle User
+rectangle UserConfiguration
+rectangle UserController
+rectangle UserId
+rectangle UserRepository
+rectangle UserService
+rectangle ValidationBehavior
+
+AuthorizationOptions                -[#3574f0,plain]->>  RolePermission                     
+AuthorizationOptions                -[#955ae0,plain]->>  RolePermission                     
+Comment                             -[#f2c55c,plain]-*  CommentId                          
+Comment                             -[#3574f0,plain]->>  CommentId                          
+Comment                             -[#3574f0,plain]->>  CommentObjectType                  
+Comment                             -[#f2c55c,plain]-*  CommentObjectType                  
+Comment                             -[#955ae0,plain]->>  CommentObjectType                  
+Comment                             -[#3574f0,plain]->>  Entity                             
+Comment                             -[#24a394,dashed]-^  Entity                             
+Comment                             -[#955ae0,plain]->>  ProjectId                          
+Comment                             -[#3574f0,plain]->>  ProjectId                          
+Comment                             -[#f2c55c,plain]-*  ProjectId                          
+Comment                             -[#955ae0,plain]->>  UserId                             
+Comment                             -[#f2c55c,plain]-*  UserId                             
+Comment                             -[#3574f0,plain]->>  UserId                             
+CommentConfiguration                -[#3574f0,plain]->>  Comment                            
+CommentConfiguration                -[#3574f0,plain]->>  CommentId                          
+CommentConfiguration                -[#3574f0,plain]->>  Entity                             
+CommentConfiguration                -[#3574f0,plain]->>  Project                            
+CommentConfiguration                -[#3574f0,plain]->>  ProjectId                          
+CommentConfiguration                -[#3574f0,plain]->>  User                               
+CommentConfiguration                -[#3574f0,plain]->>  UserId                             
+CommentId                           -[#3574f0,plain]->>  CommentId                          
+CommentId                           -[#955ae0,plain]->>  CommentId                          
+ConfigsCategoryTable                -[#3574f0,plain]->>  PostBinarDbContext                 
+CreateProjactCommand                -[#3574f0,plain]->>  CreateProjactCommand               
+CreateProjactCommand                -[#955ae0,plain]->>  CreateProjactCommand               
+CreateProjactCommand                -[#3574f0,plain]->>  ProjectId                          
+CreateProjactCommand                -[#955ae0,plain]->>  UserId                             
+CreateProjactCommand                -[#f2c55c,plain]-*  UserId                             
+CreateProjactCommandHandler         -[#3574f0,plain]->>  CreateProjactCommand               
+CreateProjactCommandHandler         -[#f2c55c,plain]-*  IProjectService                    
+CreateProjactCommandHandler         -[#5fad65,dotted]->>  IProjectService                    
+CreateProjactCommandHandler         -[#3574f0,plain]->>  IProjectService                    
+CreateProjactCommandHandler         -[#3574f0,plain]->>  ProjectId                          
+DependencyInjection                 -[#3574f0,plain]->>  IJwtProvider                       
+DependencyInjection                 -[#3574f0,plain]->>  IPasswordHasher                    
+DependencyInjection                 -[#3574f0,plain]->>  IProjectRepository                 
+DependencyInjection                 -[#3574f0,plain]->>  IProjectService                    
+DependencyInjection                 -[#3574f0,plain]->>  IUnitOfWork                        
+DependencyInjection                 -[#3574f0,plain]->>  IUserRepository                    
+DependencyInjection                 -[#3574f0,plain]->>  IUserService                       
+DependencyInjection                 -[#3574f0,plain]->>  JwtProvider                        
+DependencyInjection                 -[#3574f0,plain]->>  PasswordHasher                     
+DependencyInjection                 -[#3574f0,plain]->>  PostBinarDbContext                 
+DependencyInjection                 -[#3574f0,plain]->>  ProjectRepository                  
+DependencyInjection                 -[#3574f0,plain]->>  ProjectService                     
+DependencyInjection                 -[#3574f0,plain]->>  UserRepository                     
+DependencyInjection                 -[#3574f0,plain]->>  UserService                        
+DependencyInjection                 -[#3574f0,plain]->>  ValidationBehavior                 
+FileStorage                         -[#3574f0,plain]->>  Entity                             
+FileStorage                         -[#24a394,dashed]-^  Entity                             
+FileStorage                         -[#f2c55c,plain]-*  FileStorageId                      
+FileStorage                         -[#3574f0,plain]->>  FileStorageId                      
+FileStorage                         -[#955ae0,plain]->>  ProjectId                          
+FileStorage                         -[#3574f0,plain]->>  ProjectId                          
+FileStorage                         -[#f2c55c,plain]-*  ProjectId                          
+FileStorage                         -[#f2c55c,plain]-*  StorageObjectType                  
+FileStorage                         -[#3574f0,plain]->>  StorageObjectType                  
+FileStorage                         -[#955ae0,plain]->>  StorageObjectType                  
+FileStorageConfiguration            -[#3574f0,plain]->>  Entity                             
+FileStorageConfiguration            -[#3574f0,plain]->>  FileStorage                        
+FileStorageConfiguration            -[#3574f0,plain]->>  FileStorageId                      
+FileStorageConfiguration            -[#3574f0,plain]->>  ProjectId                          
+FileStorageId                       -[#3574f0,plain]->>  FileStorageId                      
+FileStorageId                       -[#955ae0,plain]->>  FileStorageId                      
+IJwtProvider                        -[#3574f0,plain]->>  User                               
+IPostBinarDbContext                 -[#3574f0,plain]->>  Comment                            
+IPostBinarDbContext                 -[#3574f0,plain]->>  FileStorage                        
+IPostBinarDbContext                 -[#3574f0,plain]->>  Note                               
+IPostBinarDbContext                 -[#3574f0,plain]->>  NoteCategory                       
+IPostBinarDbContext                 -[#3574f0,plain]->>  Project                            
+IPostBinarDbContext                 -[#3574f0,plain]->>  ProjectMembership                  
+IPostBinarDbContext                 -[#3574f0,plain]->>  Specialization                     
+IPostBinarDbContext                 -[#3574f0,plain]->>  TaskCategory                       
+IPostBinarDbContext                 -[#3574f0,plain]->>  TaskItem                           
+IPostBinarDbContext                 -[#3574f0,plain]->>  User                               
+IProjectRepository                  -[#3574f0,plain]->>  Project                            
+IProjectRepository                  -[#3574f0,plain]->>  ProjectId                          
+IProjectService                     -[#3574f0,plain]->>  ProjectId                          
+IProjectService                     -[#3574f0,plain]->>  UserId                             
+IUserRepository                     -[#3574f0,plain]->>  User                               
+IUserRepository                     -[#3574f0,plain]->>  UserId                             
+IUserService                        -[#3574f0,plain]->>  UserId                             
+InitialCreate                       -[#3574f0,plain]->>  PostBinarDbContext                 
+JwtProvider                         -[#3574f0,plain]->>  Entity                             
+JwtProvider                         -[#24a394,dashed]-^  IJwtProvider                       
+JwtProvider                         -[#3574f0,plain]->>  JwtOptions                         
+JwtProvider                         -[#5fad65,dotted]->>  JwtOptions                         
+JwtProvider                         -[#f2c55c,plain]-*  JwtOptions                         
+JwtProvider                         -[#3574f0,plain]->>  User                               
+JwtProvider                         -[#3574f0,plain]->>  UserId                             
+LogInCommand                        -[#3574f0,plain]->>  LogInCommand                       
+LogInCommand                        -[#955ae0,plain]->>  LogInCommand                       
+LogInCommandHandler                 -[#3574f0,plain]->>  IUserService                       
+LogInCommandHandler                 -[#f2c55c,plain]-*  IUserService                       
+LogInCommandHandler                 -[#5fad65,dotted]->>  IUserService                       
+LogInCommandHandler                 -[#3574f0,plain]->>  LogInCommand                       
+LogInCommandValidator               -[#3574f0,plain]->>  LogInCommand                       
+Note                                -[#3574f0,plain]->>  Comment                            
+Note                                -[#3574f0,plain]->>  Entity                             
+Note                                -[#24a394,dashed]-^  Entity                             
+Note                                -[#f2c55c,plain]-*  NoteId                             
+Note                                -[#3574f0,plain]->>  NoteId                             
+Note                                -[#3574f0,plain]->>  ProjectId                          
+Note                                -[#f2c55c,plain]-*  ProjectId                          
+Note                                -[#955ae0,plain]->>  ProjectId                          
+Note                                -[#955ae0,plain]->>  UserId                             
+Note                                -[#3574f0,plain]->>  UserId                             
+Note                                -[#f2c55c,plain]-*  UserId                             
+NoteCategoryConfiguration           -[#3574f0,plain]->>  NoteCategory                       
+NoteConfiguration                   -[#3574f0,plain]->>  Entity                             
+NoteConfiguration                   -[#3574f0,plain]->>  Note                               
+NoteConfiguration                   -[#3574f0,plain]->>  NoteId                             
+NoteConfiguration                   -[#3574f0,plain]->>  UserId                             
+NoteId                              -[#955ae0,plain]->>  NoteId                             
+NoteId                              -[#3574f0,plain]->>  NoteId                             
+PasswordHasher                      -[#24a394,dashed]-^  IPasswordHasher                    
+PermissionConfiguration             -[#3574f0,plain]->>  Permission                         
+PermissionConfiguration             -[#3574f0,plain]->>  PermissionEntity                   
+PermissionEntity                    -[#3574f0,plain]->>  RoleEntity                         
+PostBinarDbContext                  -[#f2c55c,plain]-*  AuthorizationOptions               
+PostBinarDbContext                  -[#3574f0,plain]->>  AuthorizationOptions               
+PostBinarDbContext                  -[#3574f0,plain]->>  Comment                            
+PostBinarDbContext                  -[#3574f0,plain]->>  FileStorage                        
+PostBinarDbContext                  -[#24a394,dashed]-^  IPostBinarDbContext                
+PostBinarDbContext                  -[#24a394,dashed]-^  IUnitOfWork                        
+PostBinarDbContext                  -[#3574f0,plain]->>  Note                               
+PostBinarDbContext                  -[#3574f0,plain]->>  NoteCategory                       
+PostBinarDbContext                  -[#f2c55c,plain]-*  PostBinarDbContext                 
+PostBinarDbContext                  -[#3574f0,plain]->>  Project                            
+PostBinarDbContext                  -[#3574f0,plain]->>  ProjectMembership                  
+PostBinarDbContext                  -[#3574f0,plain]->>  RolePermissionConfiguration        
+PostBinarDbContext                  -[#3574f0,plain]->>  Specialization                     
+PostBinarDbContext                  -[#3574f0,plain]->>  TaskCategory                       
+PostBinarDbContext                  -[#3574f0,plain]->>  TaskItem                           
+PostBinarDbContext                  -[#3574f0,plain]->>  User                               
+PostBinarDbContextModelSnapshot     -[#3574f0,plain]->>  PostBinarDbContext                 
+Project                             -[#3574f0,plain]->>  Entity                             
+Project                             -[#24a394,dashed]-^  Entity                             
+Project                             -[#3574f0,plain]->>  Note                               
+Project                             -[#3574f0,plain]->>  ProjectId                          
+Project                             -[#f2c55c,plain]-*  ProjectId                          
+Project                             -[#3574f0,plain]->>  ProjectMembership                  
+Project                             -[#3574f0,plain]->>  TaskItem                           
+Project                             -[#955ae0,plain]->>  UserId                             
+Project                             -[#3574f0,plain]->>  UserId                             
+Project                             -[#f2c55c,plain]-*  UserId                             
+ProjectConfiguration                -[#3574f0,plain]->>  Entity                             
+ProjectConfiguration                -[#3574f0,plain]->>  Note                               
+ProjectConfiguration                -[#3574f0,plain]->>  Project                            
+ProjectConfiguration                -[#3574f0,plain]->>  ProjectId                          
+ProjectConfiguration                -[#3574f0,plain]->>  ProjectMembership                  
+ProjectConfiguration                -[#3574f0,plain]->>  TaskItem                           
+ProjectConfiguration                -[#3574f0,plain]->>  UserId                             
+ProjectId                           -[#955ae0,plain]->>  ProjectId                          
+ProjectId                           -[#3574f0,plain]->>  ProjectId                          
+ProjectMembership                   -[#3574f0,plain]->>  Entity                             
+ProjectMembership                   -[#24a394,dashed]-^  Entity                             
+ProjectMembership                   -[#3574f0,plain]->>  Project                            
+ProjectMembership                   -[#955ae0,plain]->>  Project                            
+ProjectMembership                   -[#f2c55c,plain]-*  ProjectId                          
+ProjectMembership                   -[#955ae0,plain]->>  ProjectId                          
+ProjectMembership                   -[#3574f0,plain]->>  ProjectId                          
+ProjectMembership                   -[#f2c55c,plain]-*  ProjectMembershipId                
+ProjectMembership                   -[#3574f0,plain]->>  ProjectMembershipId                
+ProjectMembership                   -[#3574f0,plain]->>  ProjectRole                        
+ProjectMembership                   -[#955ae0,plain]->>  User                               
+ProjectMembership                   -[#3574f0,plain]->>  User                               
+ProjectMembership                   -[#f2c55c,plain]-*  UserId                             
+ProjectMembership                   -[#3574f0,plain]->>  UserId                             
+ProjectMembership                   -[#955ae0,plain]->>  UserId                             
+ProjectMembershipConfiguration      -[#3574f0,plain]->>  Entity                             
+ProjectMembershipConfiguration      -[#3574f0,plain]->>  ProjectId                          
+ProjectMembershipConfiguration      -[#3574f0,plain]->>  ProjectMembership                  
+ProjectMembershipConfiguration      -[#3574f0,plain]->>  ProjectMembershipId                
+ProjectMembershipConfiguration      -[#3574f0,plain]->>  UserId                             
+ProjectMembershipId                 -[#955ae0,plain]->>  ProjectMembershipId                
+ProjectMembershipId                 -[#3574f0,plain]->>  ProjectMembershipId                
+ProjectMembershipRoleConfiguration  -[#3574f0,plain]->>  ProjectMembership                  
+ProjectMembershipRoleConfiguration  -[#3574f0,plain]->>  ProjectRole                        
+ProjectRepository                   -[#24a394,dashed]-^  IProjectRepository                 
+ProjectRepository                   -[#f2c55c,plain]-*  PostBinarDbContext                 
+ProjectRepository                   -[#3574f0,plain]->>  Project                            
+ProjectRepository                   -[#3574f0,plain]->>  ProjectId                          
+ProjectRepository                   -[#24a394,dashed]-^  Repository                         
+ProjectRepository                   -[#3574f0,plain]->>  Repository                         
+ProjectRole                         -[#3574f0,plain]->>  ProjectMembership                  
+ProjectRole                         -[#955ae0,plain]->>  ProjectMembership                  
+ProjectRole                         -[#3574f0,plain]->>  ProjectMembershipId                
+ProjectRole                         -[#955ae0,plain]->>  ProjectMembershipId                
+ProjectRole                         -[#955ae0,plain]->>  RoleEntity                         
+ProjectRole                         -[#3574f0,plain]->>  RoleEntity                         
+ProjectService                      -[#3574f0,plain]->>  Entity                             
+ProjectService                      -[#f2c55c,plain]-*  IProjectRepository                 
+ProjectService                      -[#3574f0,plain]->>  IProjectRepository                 
+ProjectService                      -[#5fad65,dotted]->>  IProjectRepository                 
+ProjectService                      -[#24a394,dashed]-^  IProjectService                    
+ProjectService                      -[#3574f0,plain]->>  IUnitOfWork                        
+ProjectService                      -[#f2c55c,plain]-*  IUnitOfWork                        
+ProjectService                      -[#5fad65,dotted]->>  IUnitOfWork                        
+ProjectService                      -[#3574f0,plain]->>  Project                            
+ProjectService                      -[#3574f0,plain]->>  ProjectId                          
+ProjectService                      -[#3574f0,plain]->>  UserId                             
+RegisterCommand                     -[#955ae0,plain]->>  RegisterCommand                    
+RegisterCommand                     -[#3574f0,plain]->>  RegisterCommand                    
+RegisterCommand                     -[#3574f0,plain]->>  UserId                             
+RegisterCommandValidator            -[#3574f0,plain]->>  RegisterCommand                    
+RegisterCommnadHandler              -[#3574f0,plain]->>  IUserService                       
+RegisterCommnadHandler              -[#5fad65,dotted]->>  IUserService                       
+RegisterCommnadHandler              -[#f2c55c,plain]-*  IUserService                       
+RegisterCommnadHandler              -[#3574f0,plain]->>  RegisterCommand                    
+RegisterCommnadHandler              -[#3574f0,plain]->>  UserId                             
+RegisterUserRequest                 -[#3574f0,plain]->>  RegisterUserRequest                
+RegisterUserRequest                 -[#955ae0,plain]->>  RegisterUserRequest                
+Repository                          -[#f2c55c,plain]-*  PostBinarDbContext                 
+Repository                          -[#5fad65,dotted]->>  PostBinarDbContext                 
+RoleConfiguration                   -[#3574f0,plain]->>  PermissionEntity                   
+RoleConfiguration                   -[#3574f0,plain]->>  Role                               
+RoleConfiguration                   -[#3574f0,plain]->>  RoleEntity                         
+RoleConfiguration                   -[#3574f0,plain]->>  RolePermissionsEntity              
+RoleEntity                          -[#3574f0,plain]->>  PermissionEntity                   
+RolePermissionConfiguration         -[#f2c55c,plain]-*  AuthorizationOptions               
+RolePermissionConfiguration         -[#3574f0,plain]->>  AuthorizationOptions               
+RolePermissionConfiguration         -[#5fad65,dotted]->>  AuthorizationOptions               
+RolePermissionConfiguration         -[#3574f0,plain]->>  Permission                         
+RolePermissionConfiguration         -[#3574f0,plain]->>  Role                               
+RolePermissionConfiguration         -[#3574f0,plain]->>  RolePermission                     
+RolePermissionConfiguration         -[#3574f0,plain]->>  RolePermissionsEntity              
+RolePermissionConfiguration         -[#955ae0,plain]->>  RolePermissionsEntity              
+RoleUpdate                          -[#3574f0,plain]->>  PostBinarDbContext                 
+SpecializationConfiguration         -[#3574f0,plain]->>  Specialization                     
+Startup                             -[#3574f0,plain]->>  AuthorizationOptions               
+Startup                             -[#3574f0,plain]->>  DependencyInjection                
+Startup                             -[#3574f0,plain]->>  DependencyInjection                
+Startup                             -[#3574f0,plain]->>  DependencyInjection                
+Startup                             -[#3574f0,plain]->>  JwtOptions                         
+TaskCategoryConfigurations          -[#3574f0,plain]->>  TaskCategory                       
+TaskItem                            -[#3574f0,plain]->>  Comment                            
+TaskItem                            -[#3574f0,plain]->>  Entity                             
+TaskItem                            -[#24a394,dashed]-^  Entity                             
+TaskItem                            -[#f2c55c,plain]-*  ProjectId                          
+TaskItem                            -[#955ae0,plain]->>  ProjectId                          
+TaskItem                            -[#3574f0,plain]->>  ProjectId                          
+TaskItem                            -[#3574f0,plain]->>  TaskItemId                         
+TaskItem                            -[#f2c55c,plain]-*  TaskItemId                         
+TaskItem                            -[#3574f0,plain]->>  TaskItemPriority                   
+TaskItem                            -[#f2c55c,plain]-*  TaskItemPriority                   
+TaskItem                            -[#955ae0,plain]->>  TaskItemPriority                   
+TaskItem                            -[#955ae0,plain]->>  TaskItemStatus                     
+TaskItem                            -[#f2c55c,plain]-*  TaskItemStatus                     
+TaskItem                            -[#3574f0,plain]->>  TaskItemStatus                     
+TaskItem                            -[#955ae0,plain]->>  UserId                             
+TaskItem                            -[#f2c55c,plain]-*  UserId                             
+TaskItem                            -[#3574f0,plain]->>  UserId                             
+TaskItemConfiguration               -[#3574f0,plain]->>  Entity                             
+TaskItemConfiguration               -[#3574f0,plain]->>  Project                            
+TaskItemConfiguration               -[#3574f0,plain]->>  ProjectId                          
+TaskItemConfiguration               -[#3574f0,plain]->>  TaskItem                           
+TaskItemConfiguration               -[#3574f0,plain]->>  TaskItemId                         
+TaskItemConfiguration               -[#3574f0,plain]->>  UserId                             
+TaskItemId                          -[#3574f0,plain]->>  TaskItemId                         
+TaskItemId                          -[#955ae0,plain]->>  TaskItemId                         
+TestMigrations                      -[#3574f0,plain]->>  PostBinarDbContext                 
+User                                -[#24a394,dashed]-^  Entity                             
+User                                -[#3574f0,plain]->>  Entity                             
+User                                -[#3574f0,plain]->>  ProjectMembership                  
+User                                -[#3574f0,plain]->>  Specialization                     
+User                                -[#955ae0,plain]->>  Specialization                     
+User                                -[#3574f0,plain]->>  UserId                             
+User                                -[#f2c55c,plain]-*  UserId                             
+UserConfiguration                   -[#3574f0,plain]->>  Entity                             
+UserConfiguration                   -[#3574f0,plain]->>  ProjectMembership                  
+UserConfiguration                   -[#3574f0,plain]->>  User                               
+UserConfiguration                   -[#3574f0,plain]->>  UserId                             
+UserController                      -[#24a394,dashed]-^  BaseController                     
+UserController                      -[#3574f0,plain]->>  RegisterCommand                    
+UserController                      -[#3574f0,plain]->>  RegisterUserRequest                
+UserId                              -[#3574f0,plain]->>  UserId                             
+UserId                              -[#955ae0,plain]->>  UserId                             
+UserRepository                      -[#24a394,dashed]-^  IUserRepository                    
+UserRepository                      -[#f2c55c,plain]-*  PostBinarDbContext                 
+UserRepository                      -[#3574f0,plain]->>  PostBinarDbContext                 
+UserRepository                      -[#3574f0,plain]->>  Repository                         
+UserRepository                      -[#24a394,dashed]-^  Repository                         
+UserRepository                      -[#3574f0,plain]->>  User                               
+UserRepository                      -[#3574f0,plain]->>  UserId                             
+UserService                         -[#3574f0,plain]->>  Entity                             
+UserService                         -[#3574f0,plain]->>  IJwtProvider                       
+UserService                         -[#f2c55c,plain]-*  IJwtProvider                       
+UserService                         -[#5fad65,dotted]->>  IJwtProvider                       
+UserService                         -[#f2c55c,plain]-*  IPasswordHasher                    
+UserService                         -[#5fad65,dotted]->>  IPasswordHasher                    
+UserService                         -[#3574f0,plain]->>  IPasswordHasher                    
+UserService                         -[#f2c55c,plain]-*  IUnitOfWork                        
+UserService                         -[#3574f0,plain]->>  IUnitOfWork                        
+UserService                         -[#5fad65,dotted]->>  IUnitOfWork                        
+UserService                         -[#f2c55c,plain]-*  IUserRepository                    
+UserService                         -[#5fad65,dotted]->>  IUserRepository                    
+UserService                         -[#3574f0,plain]->>  IUserRepository                    
+UserService                         -[#24a394,dashed]-^  IUserService                       
+UserService                         -[#3574f0,plain]->>  User                               
+UserService                         -[#3574f0,plain]->>  UserId                             
+@enduml
