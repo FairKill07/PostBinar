@@ -18,6 +18,7 @@ public sealed class Project : Abstraction.Entity<ProjectId>
         string description,
         UserId ownerId,
         DateTimeOffset createdAt,
+        DateTimeOffset updatedAt,
         bool isActive)
         : base(id)
     {
@@ -58,6 +59,7 @@ public sealed class Project : Abstraction.Entity<ProjectId>
             name,
             description,
             ownerId,
+            DateTimeOffset.UtcNow,
             DateTimeOffset.UtcNow,
             true);
 
