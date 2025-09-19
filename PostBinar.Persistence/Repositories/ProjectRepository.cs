@@ -10,6 +10,6 @@ internal sealed class ProjectRepository : Repository<Project, ProjectId>, IProje
 
     public void Update(Project project)
     {
-        throw new NotImplementedException();
+        _context.Projects.Update(project);
     }
 }

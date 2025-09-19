@@ -5,6 +5,7 @@ namespace PostBinar.Application.Abstractions.Interfaces.Service;
 
 public interface IProjectService
 {
-    Task<ProjectId> CreateProjectAsync(string Name, string Description, UserId OwnerId);
-
+    Task<ProjectId> CreateProjectAsync(string name, string description, UserId ownerId);
+    Task<Project> UpdateProjectAsync(UserId ownerId, ProjectId projeckId, string name, string description);
+    Task Deactivate(ProjectId projectId);
 }

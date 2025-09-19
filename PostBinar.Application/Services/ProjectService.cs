@@ -17,15 +17,44 @@ namespace PostBinar.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<ProjectId> CreateProjectAsync(string Name, string Description, UserId OwnerId)
+        public async Task<ProjectId> CreateProjectAsync(string name, string description, UserId ownerId)
         {
-            var project = Project.Create(Name, Description, OwnerId);
+            var project = Project.Create(name, description, ownerId);
 
             _projectRepository.Add(project.Value);
             
             await _unitOfWork.SaveChangesAsync();
 
             return project.Value.Id;
+        }
+        public async Task<Project> UpdateProjectAsync(UserId ownerId, ProjectId projectId, string name, string description)
+        {
+            var project = await _projectRepository.GetByIdAsync(projectId);
+
+            if (project is null)
+                throw new KeyNotFoundException($"Project with id {projectId} not found.");
+
+            if (!project.IsOwner(ownerId))
+                throw new InvalidOperationException("Only the project owner can update the project.");
+
+            project.Update(name, description);
+
+            _projectRepository.Update(project);
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return project;
+        }
+        public async Task Deactivate(ProjectId projectId)
+        {
+            var project = await _projectRepository.GetByIdAsync(projectId);
+            
+            if (project is null)
+                throw new KeyNotFoundException($"Project with id {projectId} not found.");
+            
+            project.Deactivate();
+            
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }
