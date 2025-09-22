@@ -40,11 +40,24 @@ public sealed class ProjectMembershipService : IProjectMembershipService
         await _unitOfWork.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<UserId>> GetProjectMemberIdsAsync(ProjectId projectId)
+    public async Task<List<UserId>> GetProjectMemberIdsAsync(ProjectId projectId)
     {
         var memberships = await _membershipRepository.GetAllForProjectAsync(projectId);
-        
-        return memberships.Select(m => m.UserId);
+
+        return memberships
+            .Select(m => m.UserId)
+            .ToList();
+    }
+
+    public async Task<List<ProjectMembership>> GetAllProjectUserAsync(UserId userId)
+    {
+        var memberships = await _membershipRepository.GetAllForUserAsync(userId);
+
+        var activeMemberships = memberships
+            .Where(m => m.Project.IsActive)
+            .ToList();
+
+        return activeMemberships;
     }
 
 }

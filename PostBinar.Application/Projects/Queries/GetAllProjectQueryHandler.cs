@@ -1,21 +1,21 @@
 ﻿using MediatR;
 using AutoMapper;
-using PostBinar.Application.Abstractions.Interfaces.Repositories;
+using PostBinar.Application.Abstractions.Interfaces.Service;
 
 namespace PostBinar.Application.Projects.Queries
 {
     public sealed class GetAllProjectQueryHandler : IRequestHandler<GetAllProjectQuery, ProjectListVm>
     {
-        private readonly IProjectRepository _projectRepository;
+        private readonly IProjectMembershipService _projectMembershipService;
         private readonly IMapper _mapper;
-        public GetAllProjectQueryHandler(IProjectRepository projectRepository, IMapper mapper)
+        public GetAllProjectQueryHandler(IProjectMembershipService projectMembershipService, IMapper mapper)
         {
-            _projectRepository = projectRepository;
+            _projectMembershipService = projectMembershipService;
             _mapper = mapper;
         }
         public async Task<ProjectListVm> Handle(GetAllProjectQuery request, CancellationToken cancellationToken)
         {
-            var projects = await _projectRepository.GetProjectsByUserIdAsync(request.UserId, cancellationToken);
+            var projects = await _projectMembershipService.GetAllProjectUserAsync(request.UserId);
 
             var projectDtos = _mapper.Map<List<ProjectLookUpDto>>(projects);
 

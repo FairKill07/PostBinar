@@ -56,14 +56,5 @@ namespace PostBinar.Application.Services
             
             await _unitOfWork.SaveChangesAsync();
         }
-
-        public async Task<IReadOnlyList<Project>> GetUserProjectsAsync(UserId userId, CancellationToken ct = default)
-        {
-            var projects = await _projectRepository.GetProjectsByUserIdAsync(userId, ct);
-
-            projects = projects.Where(p => p.IsActive == true).ToList();
-
-            return projects;
-        }
     }
 }

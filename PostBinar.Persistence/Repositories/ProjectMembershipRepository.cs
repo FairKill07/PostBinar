@@ -11,10 +11,18 @@ internal sealed class ProjectMembershipRepository : Repository<ProjectMembership
 {
     public ProjectMembershipRepository(PostBinarDbContext context) : base(context) { }
 
-    public async Task<IEnumerable<ProjectMembership>> GetAllForProjectAsync(ProjectId projectId)
+    public async Task<List<ProjectMembership>> GetAllForProjectAsync(ProjectId projectId)
     {
         return await _context.ProjectMemberships
             .Where(m => m.ProjectId == projectId)
+            .ToListAsync();
+    }
+
+    public async Task<List<ProjectMembership>> GetAllForUserAsync(UserId userId)
+    {
+        return await _context.ProjectMemberships
+            .Where(m => m.UserId == userId)
+            .Include(m => m.Project)
             .ToListAsync();
     }
 

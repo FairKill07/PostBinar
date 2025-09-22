@@ -14,12 +14,4 @@ internal sealed class ProjectRepository : Repository<Project, ProjectId>, IProje
     {
         _context.Projects.Update(project);
     }
-
-    public async Task<IReadOnlyList<Project>> GetActiveProjectsByUserIdAsync(UserId userId, CancellationToken ct = default)
-    {
-        return await _context.Projects
-            .Include(p => p.ProjectMemberships)
-            .Where(p => p.OwnerId == userId || p.ProjectMemberships.Any(m => m.UserId == userId) && p.IsActive)
-            .ToListAsync(ct);
-    }
 }
