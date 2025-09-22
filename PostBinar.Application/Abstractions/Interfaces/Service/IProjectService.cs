@@ -8,4 +8,5 @@ public interface IProjectService
     Task<ProjectId> CreateProjectAsync(string name, string description, UserId ownerId);
     Task<Project> UpdateProjectAsync(UserId ownerId, ProjectId projectId, string name, string description);
     Task Deactivate(ProjectId projectId);
+    Task<IReadOnlyList<Project>> GetUserProjectsAsync(UserId userId, CancellationToken ct = default);
 }

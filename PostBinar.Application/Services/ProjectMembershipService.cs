@@ -42,7 +42,6 @@ public sealed class ProjectMembershipService : IProjectMembershipService
 
     public async Task<IEnumerable<UserId>> GetProjectMemberIdsAsync(ProjectId projectId)
     {
-        // Тут можно добавить метод репозитория, который возвращает всех участников проекта
         var memberships = await _membershipRepository.GetAllByProjectIdAsync(projectId);
         return memberships.Select(m => m.UserId);
     }

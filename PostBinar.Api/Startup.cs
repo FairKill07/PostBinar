@@ -3,6 +3,9 @@ using PostBinar.Persistence;
 using PostBinar.Infrastructure.Authorization;
 using PostBinar.Infrastructure;
 using PostBinar.Infrastructure.Authorization.Jwt;
+using PostBinar.Application.Common.Mappings;
+using System.Reflection;
+using PostBinar.Application.Abstractions.Interfaces;
 
 namespace PostBinar.Api;
 
@@ -23,6 +26,13 @@ public class Startup
         // Options
         services.Configure<AuthorizationOptions>(_configuration.GetSection(nameof(AuthorizationOptions)));
         services.Configure<JwtOptions>(_configuration.GetSection(nameof(JwtOptions)));
+
+        //AutoMapper
+        services.AddAutoMapper(config =>
+        {
+            config.AddProfile(new AssemblyMappingProfile(Assembly.GetExecutingAssembly()));
+            config.AddProfile(new AssemblyMappingProfile(typeof(IPostBinarDbContext).Assembly));
+        });
 
         // Persistence
         services.AddPersistence(_configuration);
