@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using PostBinar.Application.Projects.Commands.CreateProject;
 using PostBinar.Application.Projects.Commands.UpdateProject;
+using PostBinar.Application.Projects.Queries;
+using PostBinar.Domain.Users;
 
 namespace PostBinar.Api.Controllers.Projects;
 
@@ -38,5 +40,15 @@ public class ProjectController : BaseController
         var project = await _mediator.Send(command, cancellationToken);
 
         return Ok(project);
+    }
+    [HttpGet]
+    public async Task<IActionResult> GetAllProjects([FromQuery] UserId userId, CancellationToken cancellationToken)
+    {
+        var projects = await _mediator.Send(
+            new GetAllProjectQuery(userId),
+            cancellationToken
+        );
+
+        return Ok(projects);
     }
 }

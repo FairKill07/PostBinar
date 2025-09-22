@@ -37,7 +37,7 @@ public sealed class Project : Abstraction.Entity<ProjectId>
     public UserId OwnerId { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }
     public DateTimeOffset UpdatedAt { get; private set; }
-    public bool IsActive { get; private set; }
+    public  bool IsActive { get; private set; }
     public IReadOnlyCollection<ProjectMembership> ProjectMemberships => _projectMemberships;
     public IReadOnlyCollection<TaskItem> Tasks => _tasks;
     public IReadOnlyCollection<Note> Notes => _notes;

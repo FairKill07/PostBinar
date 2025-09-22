@@ -43,6 +43,7 @@ public sealed class ProjectMembershipService : IProjectMembershipService
     public async Task<IEnumerable<UserId>> GetProjectMemberIdsAsync(ProjectId projectId)
     {
         var memberships = await _membershipRepository.GetAllForProjectAsync(projectId);
+        
         return memberships.Select(m => m.UserId);
     }
 

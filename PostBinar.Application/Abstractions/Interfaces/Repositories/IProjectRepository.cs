@@ -5,7 +5,8 @@ namespace PostBinar.Application.Abstractions.Interfaces.Repositories;
 
 public interface IProjectRepository
 {
-    Task<Project> GetByIdAsync(ProjectId projectId);
+    Task<Project?> GetByIdAsync(ProjectId projectId);
+    Task<IReadOnlyList<Project>> GetActiveProjectsByUserIdAsync(UserId userId, CancellationToken ct = default);
     void Add(Project project);
     void Delete(Project project);
     void Update(Project project);
