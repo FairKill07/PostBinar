@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using PostBinar.Application.Abstractions.Interfaces;
+using PostBinar.Domain.Authorization;
 using PostBinar.Domain.Categorys;
 using PostBinar.Domain.Comments;
 using PostBinar.Domain.FileStorages;
@@ -42,6 +43,7 @@ public sealed class PostBinarDbContext : DbContext, IPostBinarDbContext, IUnitOf
     public DbSet<TaskCategory> TaskCategories => Set<TaskCategory>();
 
     public DbSet<Specialization> Specializations => Set<Specialization>();
+    public DbSet<ProjectRole> ProjectRoles => Set<ProjectRole>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PostBinar.Domain.Authorization;
 using PostBinar.Domain.Categorys;
 using PostBinar.Domain.Comments;
 using PostBinar.Domain.FileStorages;
@@ -22,5 +23,6 @@ namespace PostBinar.Application.Abstractions.Interfaces
         DbSet<NoteCategory> NoteCategories { get; }
         DbSet<TaskCategory> TaskCategories { get; } 
         DbSet<Specialization> Specializations { get; }
+        DbSet<ProjectRole> ProjectRoles { get; }
     }
 }

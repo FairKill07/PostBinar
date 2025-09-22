@@ -9,4 +9,5 @@ public interface IProjectMembershipService
     Task<ProjectMembership> AddMemberAsync(ProjectId projectId, UserId userId);
     Task RemoveMemberAsync(ProjectId projectId, UserId userId);
     Task<IEnumerable<UserId>> GetProjectMemberIdsAsync(ProjectId projectId);
+
 }

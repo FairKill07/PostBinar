@@ -20,7 +20,7 @@ public sealed class ProjectMembershipService : IProjectMembershipService
 
     public async Task<ProjectMembership> AddMemberAsync(ProjectId projectId, UserId userId)
     {
-        var existing = await _membershipRepository.GetByUserAndProjectAsync(projectId, userId);
+        var existing = await _membershipRepository.GetMembershipAsync(projectId, userId);
 
         var membership = ProjectMembership.Create(projectId, userId);
 
@@ -33,7 +33,7 @@ public sealed class ProjectMembershipService : IProjectMembershipService
 
     public async Task RemoveMemberAsync(ProjectId projectId, UserId userId)
     {
-        var membership = await _membershipRepository.GetByUserAndProjectAsync(projectId, userId);
+        var membership = await _membershipRepository.GetMembershipAsync(projectId, userId);
 
         _membershipRepository.Delete(membership);
 
@@ -42,7 +42,9 @@ public sealed class ProjectMembershipService : IProjectMembershipService
 
     public async Task<IEnumerable<UserId>> GetProjectMemberIdsAsync(ProjectId projectId)
     {
-        var memberships = await _membershipRepository.GetAllByProjectIdAsync(projectId);
+        var memberships = await _membershipRepository.GetAllForProjectAsync(projectId);
+        
         return memberships.Select(m => m.UserId);
     }
+
 }
