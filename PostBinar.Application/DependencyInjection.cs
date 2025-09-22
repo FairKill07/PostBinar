@@ -17,6 +17,8 @@ public static class DependencyInjection
         services.AddTransient<IUserService, UserService >();
         services.AddTransient<IProjectService, ProjectService>();
         services.AddTransient<IProjectMembershipService, ProjectMembershipService>();
+        services.AddTransient<IMembershipRoleService, MembershipRoleService>();
+
 
 
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
