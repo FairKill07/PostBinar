@@ -1,4 +1,4 @@
-﻿namespace PostBinar.Application.Projects.Queries;
+﻿namespace PostBinar.Application.Projects.Queries.GetAllProject;
 
 public sealed class ProjectListVm 
 {

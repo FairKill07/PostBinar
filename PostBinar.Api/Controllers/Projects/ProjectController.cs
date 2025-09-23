@@ -1,8 +1,11 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using PostBinar.Application.Projects.Commands.CreateProject;
+using PostBinar.Application.Projects.Commands.DeleteProject;
 using PostBinar.Application.Projects.Commands.UpdateProject;
-using PostBinar.Application.Projects.Queries;
+using PostBinar.Application.Projects.Queries.GetAllProject;
+using PostBinar.Application.Projects.Queries.GetProjectById;
+using PostBinar.Domain.Projects;
 using PostBinar.Domain.Users;
 
 namespace PostBinar.Api.Controllers.Projects;
@@ -21,19 +24,19 @@ public class ProjectController : BaseController
         var command = new CreateProjectCommand(
             Name: request.Name,
             Description: request.Description,
-            OwnerId: request.OwnerId
+            OwnerId: new UserId(request.OwnerId)
         );
 
         var projectId = await _mediator.Send(command, cancellationToken);
         return Ok(projectId);
     }
 
-    [HttpPost]
+    [HttpPut]
     public async Task<IActionResult> Update([FromBody] UpdateProjectRequest request, CancellationToken cancellationToken)
     {
         var command = new UpdateProjectCommand(
-            OwnerId: request.OwnerId,
-            ProjectId: request.ProjectId,
+            OwnerId: new UserId(request.OwnerId),
+            ProjectId: new ProjectId(request.ProjectId),
             Name: request.Name,
             Description: request.Description
         );
@@ -41,14 +44,33 @@ public class ProjectController : BaseController
 
         return Ok(project);
     }
+
     [HttpGet]
-    public async Task<IActionResult> GetAllProjects([FromQuery] UserId userId, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAllProjects([FromQuery] Guid userId, CancellationToken cancellationToken)
     {
         var projects = await _mediator.Send(
-            new GetAllProjectQuery(userId),
+            new GetAllProjectQuery(new UserId(userId)),
             cancellationToken
         );
-
         return Ok(projects);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetProjectById([FromQuery] Guid projectId, CancellationToken cancellationToken)
+    {
+        var project = await _mediator.Send(
+            new GetProjectByIdQuery(new ProjectId(projectId)),
+            cancellationToken
+        );
+        return Ok(project);
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new DeleteProjectCommand(new ProjectId(id)), cancellationToken);
+        return NoContent();
+    }
+
+
 }

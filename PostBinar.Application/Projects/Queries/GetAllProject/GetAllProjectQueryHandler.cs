@@ -2,7 +2,7 @@
 using AutoMapper;
 using PostBinar.Application.Abstractions.Interfaces.Service;
 
-namespace PostBinar.Application.Projects.Queries
+namespace PostBinar.Application.Projects.Queries.GetAllProject
 {
     public sealed class GetAllProjectQueryHandler : IRequestHandler<GetAllProjectQuery, ProjectListVm>
     {

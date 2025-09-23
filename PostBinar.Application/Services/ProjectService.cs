@@ -56,5 +56,16 @@ namespace PostBinar.Application.Services
             
             await _unitOfWork.SaveChangesAsync();
         }
+        public async Task DeleteProject(ProjectId projectId)
+        {
+            var project = await _projectRepository.GetByIdAsync(projectId);
+
+            if (project is null)
+                throw new KeyNotFoundException($"Project with id {projectId} not found.");
+
+            _projectRepository.Delete(project);
+
+            await _unitOfWork.SaveChangesAsync();
+        }
     }
 }

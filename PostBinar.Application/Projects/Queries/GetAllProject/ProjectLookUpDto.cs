@@ -3,7 +3,7 @@ using PostBinar.Application.Common.Mappings;
 using PostBinar.Domain.ProjectMemberships;
 using PostBinar.Domain.Projects;
 
-namespace PostBinar.Application.Projects.Queries;
+namespace PostBinar.Application.Projects.Queries.GetAllProject;
 
 public sealed class ProjectLookUpDto : IMapWith<Project>
 {
