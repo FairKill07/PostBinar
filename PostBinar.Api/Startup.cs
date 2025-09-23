@@ -42,6 +42,17 @@ public class Startup
         // Swagger
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen();
+
+        //Cors
+        services.AddCors(options =>
+        {
+            options.AddDefaultPolicy(policy =>
+            {
+                policy.AllowAnyOrigin()
+                      .AllowAnyMethod()
+                      .AllowAnyHeader();
+            });
+        });
     }
 
     // Здесь middleware и пайплайн
@@ -56,6 +67,10 @@ public class Startup
 
         // Authorization
         app.UseAuthorization();
+
+        //Cors
+        app.UseCors();
+
 
         // Controllers
         app.MapControllers();

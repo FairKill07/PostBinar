@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PostBinar - Управление Проектами</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: white;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .response {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 12px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.9rem;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .response.success {
+            background: #d4edda;
+            border: 2px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .response.error {
+            background: #f8d7da;
+            border: 2px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .response.loading {
+            background: #fff3cd;
+            border: 2px solid #ffeaa7;
+            color: #856404;
+        }
+
+        .config-section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .config-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .endpoint-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 PostBinar API</h1>
+            <p>Интерфейс для управления проектами</p>
+        </div>
+
+        <div class="config-section">
+            <h3>
+                <svg class="icon" viewBox="0 0 24 24">
+                    <path d="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.22,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.22,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.68 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z"/>
+                </svg>
+                Конфигурация
+            </h3>
+            <div class="form-group">
+                <label for="baseUrl">Base URL API:</label>
+                <input type="text" id="baseUrl" class="endpoint-input" value="https://localhost:32771" placeholder="https://your-api-url.com">
+            </div>
+        </div>
+
+        <div class="grid">
+            <!-- Create Project -->
+            <div class="card">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"/>
+                    </svg>
+                    Создать проект
+                </h2>
+                <form id="createForm">
+                    <div class="form-group">
+                        <label for="createName">Название проекта:</label>
+                        <input type="text" id="createName" required placeholder="Мой новый проект">
+                    </div>
+                    <div class="form-group">
+                        <label for="createDescription">Описание:</label>
+                        <textarea id="createDescription" placeholder="Описание проекта..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="createOwnerId">ID владельца (GUID):</label>
+                        <input type="text" id="createOwnerId" required placeholder="3fa85f64-5717-4562-b3fc-2c963f66afa6">
+                    </div>
+                    <button type="submit" class="btn">
+                        <span class="btn-text">Создать проект</span>
+                    </button>
+                </form>
+                <div id="createResponse" class="response" style="display: none;"></div>
+            </div>
+
+            <!-- Update Project -->
+            <div class="card">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"/>
+                    </svg>
+                    Обновить проект
+                </h2>
+                <form id="updateForm">
+                    <div class="form-group">
+                        <label for="updateProjectId">ID проекта (GUID):</label>
+                        <input type="text" id="updateProjectId" required placeholder="3fa85f64-5717-4562-b3fc-2c963f66afa6">
+                    </div>
+                    <div class="form-group">
+                        <label for="updateOwnerId">ID владельца (GUID):</label>
+                        <input type="text" id="updateOwnerId" required placeholder="3fa85f64-5717-4562-b3fc-2c963f66afa6">
+                    </div>
+                    <div class="form-group">
+                        <label for="updateName">Новое название:</label>
+                        <input type="text" id="updateName" placeholder="Обновленное название">
+                    </div>
+                    <div class="form-group">
+                        <label for="updateDescription">Новое описание:</label>
+                        <textarea id="updateDescription" placeholder="Обновленное описание..."></textarea>
+                    </div>
+                    <button type="submit" class="btn">
+                        <span class="btn-text">Обновить проект</span>
+                    </button>
+                </form>
+                <div id="updateResponse" class="response" style="display: none;"></div>
+            </div>
+
+            <!-- Get All Projects -->
+            <div class="card">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M9,5V9H21V5M9,19H21V15H9M9,14H21V10H9M4,9H8L6,7L4,9M4,19H8L6,17L4,19M4,14H8L6,12L4,14Z"/>
+                    </svg>
+                    Получить все проекты
+                </h2>
+                <form id="getAllForm">
+                    <div class="form-group">
+                        <label for="getAllUserId">ID пользователя (GUID):</label>
+                        <input type="text" id="getAllUserId" required placeholder="3fa85f64-5717-4562-b3fc-2c963f66afa6">
+                    </div>
+                    <button type="submit" class="btn">
+                        <span class="btn-text">Загрузить проекты</span>
+                    </button>
+                </form>
+                <div id="getAllResponse" class="response" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const baseUrlInput = document.getElementById('baseUrl');
+
+        function getBaseUrl() {
+            return baseUrlInput.value.trim() || 'https://localhost:32771';
+        }
+
+        function showResponse(elementId, data, isError = false, isLoading = false) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            
+            if (isLoading) {
+                element.className = 'response loading';
+                element.textContent = 'Загрузка...';
+            } else if (isError) {
+                element.className = 'response error';
+                element.textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+            } else {
+                element.className = 'response success';
+                element.textContent = JSON.stringify(data, null, 2);
+            }
+        }
+
+        function setButtonLoading(button, loading) {
+            const spinner = '<span class="loading-spinner"></span>';
+            const textSpan = button.querySelector('.btn-text');
+            
+            if (loading) {
+                button.disabled = true;
+                if (textSpan) {
+                    const originalText = textSpan.textContent;
+                    textSpan.setAttribute('data-original', originalText);
+                    button.innerHTML = spinner + ' Загрузка...';
+                }
+            } else {
+                button.disabled = false;
+                if (textSpan) {
+                    const originalText = textSpan.getAttribute('data-original');
+                    button.innerHTML = '<span class="btn-text">' + originalText + '</span>';
+                }
+            }
+        }
+
+        // Initialize button texts
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.btn-text').forEach(span => {
+                span.setAttribute('data-original', span.textContent);
+            });
+        });
+
+        // Create Project
+        document.getElementById('createForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const button = this.querySelector('.btn');
+            
+            const requestData = {
+                name: document.getElementById('createName').value,
+                description: document.getElementById('createDescription').value,
+                ownerId: {
+                    value: document.getElementById('createOwnerId').value
+                }
+            };
+
+            try {
+                setButtonLoading(button, true);
+                showResponse('createResponse', null, false, true);
+
+                const response = await fetch(`${getBaseUrl()}/api/Project`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+                        'Access-Control-Allow-Headers': 'Content-Type'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResponse('createResponse', data);
+                    this.reset();
+                } else {
+                    showResponse('createResponse', data, true);
+                }
+            } catch (error) {
+                showResponse('createResponse', `Ошибка соединения: ${error.message}`, true);
+            } finally {
+                setButtonLoading(button, false);
+            }
+        });
+
+        // Update Project
+        document.getElementById('updateForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const button = this.querySelector('.btn');
+            
+            const requestData = {
+                ownerId: {
+                    value: document.getElementById('updateOwnerId').value
+                },
+                projectId: {
+                    value: document.getElementById('updateProjectId').value
+                },
+                name: document.getElementById('updateName').value,
+                description: document.getElementById('updateDescription').value
+            };
+
+            try {
+                setButtonLoading(button, true);
+                showResponse('updateResponse', null, false, true);
+
+                const response = await fetch(`${getBaseUrl()}/api/Project/Update`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+                        'Access-Control-Allow-Headers': 'Content-Type'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResponse('updateResponse', data);
+                } else {
+                    showResponse('updateResponse', data, true);
+                }
+            } catch (error) {
+                showResponse('updateResponse', `Ошибка соединения: ${error.message}`, true);
+            } finally {
+                setButtonLoading(button, false);
+            }
+        });
+
+        // Get All Projects
+        document.getElementById('getAllForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const button = this.querySelector('.btn');
+            
+            const userId = document.getElementById('getAllUserId').value;
+
+            try {
+                setButtonLoading(button, true);
+                showResponse('getAllResponse', null, false, true);
+
+                const response = await fetch(`${getBaseUrl()}/api/Project/GetAllProjects?value=${encodeURIComponent(userId)}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Origin': '*',
+                        'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
+                        'Access-Control-Allow-Headers': 'Content-Type'
+                    }
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResponse('getAllResponse', data);
+                } else {
+                    showResponse('getAllResponse', data, true);
+                }
+            } catch (error) {
+                showResponse('getAllResponse', `Ошибка соединения: ${error.message}`, true);
+            } finally {
+                setButtonLoading(button, false);
+            }
+        });
+    </script>
+</body>
+</html>
