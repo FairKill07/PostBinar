@@ -12,8 +12,8 @@ using PostBinar.Persistence.DbContects;
 namespace PostBinar.Persistence.Migrations
 {
     [DbContext(typeof(PostBinarDbContext))]
-    [Migration("20250915111616_TestMigrations")]
-    partial class TestMigrations
+    [Migration("20250924105726_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -172,15 +172,17 @@ namespace PostBinar.Persistence.Migrations
 
                     b.Property<string>("ColorCode")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(7)
+                        .HasColumnType("character varying(7)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("NoteCategories");
+                    b.ToTable("note_categories", (string)null);
                 });
 
             modelBuilder.Entity("PostBinar.Domain.Categorys.Specialization", b =>
@@ -193,15 +195,17 @@ namespace PostBinar.Persistence.Migrations
 
                     b.Property<string>("ColorCode")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(7)
+                        .HasColumnType("character varying(7)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Specializations");
+                    b.ToTable("specializations", (string)null);
                 });
 
             modelBuilder.Entity("PostBinar.Domain.Categorys.TaskCategory", b =>
@@ -214,15 +218,17 @@ namespace PostBinar.Persistence.Migrations
 
                     b.Property<string>("ColorCode")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(7)
+                        .HasColumnType("character varying(7)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("TaskCategories");
+                    b.ToTable("task_categories", (string)null);
                 });
 
             modelBuilder.Entity("PostBinar.Domain.Comments.Comment", b =>

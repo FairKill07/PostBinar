@@ -36,21 +36,21 @@ namespace PostBinar.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "NoteCategories",
+                name: "note_categories",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    ColorCode = table.Column<string>(type: "text", nullable: false)
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    ColorCode = table.Column<string>(type: "character varying(7)", maxLength: 7, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NoteCategories", x => x.Id);
+                    table.PrimaryKey("PK_note_categories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "PermissionEntity",
+                name: "permissions",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
@@ -59,7 +59,7 @@ namespace PostBinar.Persistence.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PermissionEntity", x => x.Id);
+                    table.PrimaryKey("PK_permissions", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -80,31 +80,44 @@ namespace PostBinar.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Specializations",
+                name: "roles",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    ColorCode = table.Column<string>(type: "text", nullable: false)
+                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Specializations", x => x.Id);
+                    table.PrimaryKey("PK_roles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "TaskCategories",
+                name: "specializations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
-                    ColorCode = table.Column<string>(type: "text", nullable: false)
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    ColorCode = table.Column<string>(type: "character varying(7)", maxLength: 7, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TaskCategories", x => x.Id);
+                    table.PrimaryKey("PK_specializations", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "task_categories",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    ColorCode = table.Column<string>(type: "character varying(7)", maxLength: 7, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_task_categories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -161,6 +174,56 @@ namespace PostBinar.Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "role_permissions",
+                columns: table => new
+                {
+                    RoleId = table.Column<int>(type: "integer", nullable: false),
+                    PermissionId = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_role_permissions", x => new { x.RoleId, x.PermissionId });
+                    table.ForeignKey(
+                        name: "FK_role_permissions_permissions_PermissionId",
+                        column: x => x.PermissionId,
+                        principalTable: "permissions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_role_permissions_roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: false),
+                    SpecializationId = table.Column<int>(type: "integer", nullable: false),
+                    ProfilePhoto = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
+                    TgChatId = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_users_specializations_SpecializationId",
+                        column: x => x.SpecializationId,
+                        principalTable: "specializations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "comments",
                 columns: table => new
                 {
@@ -195,6 +258,12 @@ namespace PostBinar.Persistence.Migrations
                         column: x => x.TaskItemId,
                         principalTable: "task_items",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_comments_users_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -215,85 +284,40 @@ namespace PostBinar.Persistence.Migrations
                         principalTable: "projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_project_memberships_users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "RoleEntity",
+                name: "project_roles",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
-                    ProjectMembershipId = table.Column<Guid>(type: "uuid", nullable: true)
+                    ProjectMembershipId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RoleId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RoleEntity", x => x.Id);
+                    table.PrimaryKey("PK_project_roles", x => new { x.ProjectMembershipId, x.RoleId });
                     table.ForeignKey(
-                        name: "FK_RoleEntity_project_memberships_ProjectMembershipId",
+                        name: "FK_project_roles_project_memberships_ProjectMembershipId",
                         column: x => x.ProjectMembershipId,
                         principalTable: "project_memberships",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RolePermissionsEntity",
-                columns: table => new
-                {
-                    RoleId = table.Column<int>(type: "integer", nullable: false),
-                    PermissionId = table.Column<int>(type: "integer", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RolePermissionsEntity", x => new { x.RoleId, x.PermissionId });
-                    table.ForeignKey(
-                        name: "FK_RolePermissionsEntity_PermissionEntity_PermissionId",
-                        column: x => x.PermissionId,
-                        principalTable: "PermissionEntity",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_RolePermissionsEntity_RoleEntity_RoleId",
+                        name: "FK_project_roles_roles_RoleId",
                         column: x => x.RoleId,
-                        principalTable: "RoleEntity",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "users",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    PasswordHash = table.Column<string>(type: "text", nullable: false),
-                    SpecializationId = table.Column<int>(type: "integer", nullable: false),
-                    ProfilePhoto = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: true),
-                    TgChatId = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
-                    RoleEntityId = table.Column<int>(type: "integer", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_users", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_users_RoleEntity_RoleEntityId",
-                        column: x => x.RoleEntityId,
-                        principalTable: "RoleEntity",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_users_Specializations_SpecializationId",
-                        column: x => x.SpecializationId,
-                        principalTable: "Specializations",
+                        principalTable: "roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.InsertData(
-                table: "PermissionEntity",
+                table: "permissions",
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
@@ -304,17 +328,17 @@ namespace PostBinar.Persistence.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "RoleEntity",
-                columns: new[] { "Id", "Name", "ProjectMembershipId" },
+                table: "roles",
+                columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { 1, "Owner", null },
-                    { 2, "Moderator", null },
-                    { 3, "User", null }
+                    { 1, "Owner" },
+                    { 2, "Moderator" },
+                    { 3, "User" }
                 });
 
             migrationBuilder.InsertData(
-                table: "RolePermissionsEntity",
+                table: "role_permissions",
                 columns: new[] { "PermissionId", "RoleId" },
                 values: new object[,]
                 {
@@ -362,6 +386,11 @@ namespace PostBinar.Persistence.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_project_roles_RoleId",
+                table: "project_roles",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_projects_IsActive",
                 table: "projects",
                 column: "IsActive");
@@ -372,13 +401,8 @@ namespace PostBinar.Persistence.Migrations
                 column: "OwnerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_RoleEntity_ProjectMembershipId",
-                table: "RoleEntity",
-                column: "ProjectMembershipId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_RolePermissionsEntity_PermissionId",
-                table: "RolePermissionsEntity",
+                name: "IX_role_permissions_PermissionId",
+                table: "role_permissions",
                 column: "PermissionId");
 
             migrationBuilder.CreateIndex(
@@ -393,43 +417,14 @@ namespace PostBinar.Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_users_RoleEntityId",
-                table: "users",
-                column: "RoleEntityId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_users_SpecializationId",
                 table: "users",
                 column: "SpecializationId");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_comments_users_AuthorId",
-                table: "comments",
-                column: "AuthorId",
-                principalTable: "users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_project_memberships_users_UserId",
-                table: "project_memberships",
-                column: "UserId",
-                principalTable: "users",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_project_memberships_projects_ProjectId",
-                table: "project_memberships");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_project_memberships_users_UserId",
-                table: "project_memberships");
-
             migrationBuilder.DropTable(
                 name: "comments");
 
@@ -437,13 +432,16 @@ namespace PostBinar.Persistence.Migrations
                 name: "file_storages");
 
             migrationBuilder.DropTable(
-                name: "NoteCategories");
+                name: "note_categories");
 
             migrationBuilder.DropTable(
-                name: "RolePermissionsEntity");
+                name: "project_roles");
 
             migrationBuilder.DropTable(
-                name: "TaskCategories");
+                name: "role_permissions");
+
+            migrationBuilder.DropTable(
+                name: "task_categories");
 
             migrationBuilder.DropTable(
                 name: "notes");
@@ -452,7 +450,13 @@ namespace PostBinar.Persistence.Migrations
                 name: "task_items");
 
             migrationBuilder.DropTable(
-                name: "PermissionEntity");
+                name: "project_memberships");
+
+            migrationBuilder.DropTable(
+                name: "permissions");
+
+            migrationBuilder.DropTable(
+                name: "roles");
 
             migrationBuilder.DropTable(
                 name: "projects");
@@ -461,13 +465,7 @@ namespace PostBinar.Persistence.Migrations
                 name: "users");
 
             migrationBuilder.DropTable(
-                name: "RoleEntity");
-
-            migrationBuilder.DropTable(
-                name: "Specializations");
-
-            migrationBuilder.DropTable(
-                name: "project_memberships");
+                name: "specializations");
         }
     }
 }
