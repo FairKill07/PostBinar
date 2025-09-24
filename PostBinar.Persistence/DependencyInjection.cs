@@ -5,6 +5,7 @@ using PostBinar.Application.Abstractions.Interfaces;
 using PostBinar.Application.Abstractions.Interfaces.Repositories;
 using PostBinar.Persistence.DbContects;
 using PostBinar.Persistence.Repositories;
+using PostBinar.Persistence.Repositories.Categorys;
 
 namespace PostBinar.Persistence;
 
@@ -17,6 +18,7 @@ public static class DependencyInjection
         services.AddTransient<IProjectRepository, ProjectRepository>();
         services.AddTransient<IProjectMembershipRepository, ProjectMembershipRepository>();
         services.AddTransient<IMembershipRoleRepository, MembershipRoleRepository>();
+        services.AddTransient<ICategorySpecializationRepository, CategorySpecializationRepository>();
 
         services.AddDbContext<PostBinarDbContext>(options =>
         {

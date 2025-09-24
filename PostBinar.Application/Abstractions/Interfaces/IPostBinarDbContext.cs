@@ -24,5 +24,6 @@ namespace PostBinar.Application.Abstractions.Interfaces
         DbSet<TaskCategory> TaskCategories { get; } 
         DbSet<Specialization> Specializations { get; }
         DbSet<ProjectRole> ProjectRoles { get; }
+        DbSet<Specialization> CategorySpecializations { get; }
     }
 }

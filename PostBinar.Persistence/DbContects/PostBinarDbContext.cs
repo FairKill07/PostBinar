@@ -43,7 +43,10 @@ public sealed class PostBinarDbContext : DbContext, IPostBinarDbContext, IUnitOf
     public DbSet<TaskCategory> TaskCategories => Set<TaskCategory>();
 
     public DbSet<Specialization> Specializations => Set<Specialization>();
+
     public DbSet<ProjectRole> ProjectRoles => Set<ProjectRole>();
+
+    public DbSet<Specialization> CategorySpecializations => Set<Specialization>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

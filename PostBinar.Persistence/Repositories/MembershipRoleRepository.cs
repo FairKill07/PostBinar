@@ -23,9 +23,14 @@ internal sealed class MembershipRoleRepository : IMembershipRoleRepository
         _context.ProjectRoles.Remove(projectRole);
     }
 
-    public async Task<ProjectRole?> GetByIdAsync(ProjectMembershipId projectMembershipId)
+    public async Task<ProjectRole> GetByIdAsync(ProjectMembershipId projectMembershipId)
     {
-        return await _context.ProjectRoles.FindAsync(projectMembershipId);
+        var projectRole = await _context.ProjectRoles.FindAsync(projectMembershipId);
+        if (projectRole == null)
+        {
+            throw new InvalidOperationException($"ProjectRole with ID {projectMembershipId.Value} not found.");
+        }
+        return projectRole;
     }
 
     public async Task<IEnumerable<ProjectMembership>> GetRolesForMembershipAsync(ProjectMembershipId projectMembershipId)
