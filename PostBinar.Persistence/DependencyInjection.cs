@@ -19,6 +19,7 @@ public static class DependencyInjection
         services.AddTransient<IProjectMembershipRepository, ProjectMembershipRepository>();
         services.AddTransient<IMembershipRoleRepository, MembershipRoleRepository>();
         services.AddTransient<ICategorySpecializationRepository, CategorySpecializationRepository>();
+        services.AddTransient<IFileStorageRepository, FileStorageRepository>();
 
         services.AddDbContext<PostBinarDbContext>(options =>
         {

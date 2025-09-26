@@ -19,6 +19,7 @@ public static class DependencyInjection
         services.AddTransient<IProjectMembershipService, ProjectMembershipService>();
         services.AddTransient<IMembershipRoleService, MembershipRoleService>();
         services.AddTransient<ICategorySpecializationService, CategorySpecializationService>();
+        services.AddTransient<IFileStorageService, FileStorageService>();
 
 
 

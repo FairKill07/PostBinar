@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using PostBinar.Domain.FileStorages;
 using PostBinar.Domain.Notes;
 using PostBinar.Domain.ProjectMemberships;
 using PostBinar.Domain.TaskItems;
@@ -10,7 +11,8 @@ public sealed class Project : Abstraction.Entity<ProjectId>
 {
     private readonly List<ProjectMembership> _projectMemberships = [];
     private readonly HashSet<TaskItem> _tasks = [];
-    private readonly HashSet<Note> _notes = []; 
+    private readonly HashSet<Note> _notes = [];
+    private readonly List<FileStorage> _fileStorages = [];
 
     private Project(
         ProjectId id,
@@ -41,6 +43,7 @@ public sealed class Project : Abstraction.Entity<ProjectId>
     public IReadOnlyCollection<ProjectMembership> ProjectMemberships => _projectMemberships;
     public IReadOnlyCollection<TaskItem> Tasks => _tasks;
     public IReadOnlyCollection<Note> Notes => _notes;
+    public IReadOnlyCollection<FileStorage> FileStorages => _fileStorages;
 
     public static Result<Project> Create(
         string name,
