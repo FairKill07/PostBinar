@@ -9,13 +9,12 @@ namespace PostBinar.Persistence.Repositories;
 
 internal sealed class FileStorageRepository : Repository<FileStorage, FileStorageId>, IFileStorageRepository
 {
-    private readonly PostBinarDbContext context;
     public FileStorageRepository(PostBinarDbContext context) : base(context)
     {
     }
     public Task<List<FileStorage>> GetByObjectAsync(Guid objectId, StorageObjectType storageObjectType)
     {
-        return context.FileStorages
+        return _context.FileStorages
             .Where(fs => fs.ObjectId == objectId && fs.ObjectType == storageObjectType && fs.IsActive)
             .ToListAsync();
     }

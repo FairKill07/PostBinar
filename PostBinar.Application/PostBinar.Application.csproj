@@ -20,7 +20,6 @@
 
   <ItemGroup>
     <Folder Include="Common\Exceptions\" />
-    <Folder Include="FileStorages\Queries\" />
   </ItemGroup>
 
 </Project>
