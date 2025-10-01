@@ -320,6 +320,165 @@ DELETE /api/Specialization/Delete/5
 
 ---
 
+
+### 📎 FileStorages (Управление файлами)
+
+#### Загрузить файл для проекта
+**POST** `/api/FileStorages/UploadFileForProject`
+
+Загружает файл, связанный с проектом.
+
+**Тело запроса:** `multipart/form-data`
+```
+ProjectId.Value: uuid
+ObjectId: uuid
+file: binary
+```
+
+**Описание полей:**
+- `ProjectId.Value` - UUID проекта
+- `ObjectId` - UUID объекта (самого проекта)
+- `file` - Бинарный файл для загрузки
+
+**Ответ:** `200 OK`
+
+#### Загрузить файл для заметки
+**POST** `/api/FileStorages/UploadFileForNote`
+
+Загружает файл, связанный с заметкой.
+
+**Тело запроса:** `multipart/form-data`
+```
+ProjectId.Value: uuid
+ObjectId: uuid
+file: binary
+```
+
+**Описание полей:**
+- `ProjectId.Value` - UUID проекта
+- `ObjectId` - UUID заметки
+- `file` - Бинарный файл для загрузки
+
+**Ответ:** `200 OK`
+
+#### Загрузить файл для задачи
+**POST** `/api/FileStorages/UploadFileForTask`
+
+Загружает файл, связанный с задачей.
+
+**Тело запроса:** `multipart/form-data`
+```
+ProjectId.Value: uuid
+ObjectId: uuid
+file: binary
+```
+
+**Описание полей:**
+- `ProjectId.Value` - UUID проекта
+- `ObjectId` - UUID задачи
+- `file` - Бинарный файл для загрузки
+
+**Ответ:** `200 OK`
+
+#### Получить файлы проекта
+**GET** `/api/FileStorages/GetFilesByProject`
+
+Возвращает список всех файлов, связанных с проектом.
+
+**Параметры запроса:**
+- `projectId` (query, UUID) - ID проекта
+
+**Пример запроса:**
+```
+GET /api/FileStorages/GetFilesByProject?projectId=de8f07d1-a8b4-4a31-9a07-8ef9dc2e7b5d
+```
+
+**Пример ответа:**
+```json
+{
+  "files": [
+    {
+      "fileSorageId": "a3c2e1f4-5b6a-4c8d-9e0f-1a2b3c4d5e6f",
+      "fileName": "document.pdf",
+      "mimeType": "application/pdf",
+      "size": 1048576,
+      "createdAt": "2025-09-23T15:30:00.000000+00:00"
+    },
+    {
+      "fileSorageId": "b4d3e2f5-6c7b-5d9e-0f1a-2b3c4d5e6f7g",
+      "fileName": "image.png",
+      "mimeType": "image/png",
+      "size": 524288,
+      "createdAt": "2025-09-23T16:45:00.000000+00:00"
+    }
+  ]
+}
+```
+
+**Описание полей ответа:**
+- `fileSorageId` - UUID файла в хранилище
+- `fileName` - Имя файла
+- `mimeType` - MIME тип файла
+- `size` - Размер файла в байтах
+- `createdAt` - Дата загрузки файла (ISO 8601)
+
+#### Получить файлы заметки
+**GET** `/api/FileStorages/GetFilesByNote`
+
+Возвращает список всех файлов, связанных с заметкой.
+
+**Параметры запроса:**
+- `noteId` (query, UUID) - ID заметки
+
+**Пример запроса:**
+```
+GET /api/FileStorages/GetFilesByNote?noteId=c5e4f3a6-7d8c-6e9f-1a2b-3c4d5e6f7g8h
+```
+
+**Ответ:** Аналогичен GetFilesByProject
+
+#### Получить файлы задачи
+**GET** `/api/FileStorages/GetFilesByTask`
+
+Возвращает список всех файлов, связанных с задачей.
+
+**Параметры запроса:**
+- `taskId` (query, UUID) - ID задачи
+
+**Пример запроса:**
+```
+GET /api/FileStorages/GetFilesByTask?taskId=d6f5g4b7-8e9d-7f0a-2b3c-4d5e6f7g8h9i
+```
+
+**Ответ:** Аналогичен GetFilesByProject
+
+#### Получить URL для скачивания файла
+**GET** `/api/FileStorages/GetFileDownloadUrl`
+
+Возвращает URL для скачивания конкретного файла.
+
+**Параметры запроса:**
+- `fileStorageId` (query, UUID) - ID файла в хранилище
+
+**Пример запроса:**
+```
+GET /api/FileStorages/GetFileDownloadUrl?fileStorageId=a3c2e1f4-5b6a-4c8d-9e0f-1a2b3c4d5e6f
+```
+
+**Пример ответа:**
+```json
+{
+  "downloadUrl": "https://storage.example.com/files/a3c2e1f4-5b6a-4c8d-9e0f-1a2b3c4d5e6f",
+  "expiresAt": "2025-10-01T20:00:00.000000+00:00"
+}
+```
+
+**Описание полей ответа:**
+- `downloadUrl` - Прямая ссылка для скачивания файла
+- `expiresAt` - Время истечения ссылки (опционально)
+
+---
+
 ## Коды ответов
 
 | Код | Описание |
