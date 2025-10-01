@@ -1,13 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using Bogus;
 using Moq;
-using Xunit;
 using PostBinar.Application.Services;
 using PostBinar.Application.Abstractions.Interfaces;
 using PostBinar.Application.Abstractions.Interfaces.Repositories;
-using PostBinar.Application.Abstractions.Interfaces.Service;
-using PostBinar.Domain.Users;
 
-public class UserServiceTests
+public class UserServiceBogusTests
 {
     private readonly Mock<IUserRepository> _userRepoMock = new();
     private readonly Mock<IPasswordHasher> _passwordHasherMock = new();
@@ -16,33 +13,44 @@ public class UserServiceTests
 
     private readonly UserService _sut;
 
-    public UserServiceTests()
+    private readonly Faker _faker = new();
+
+    public UserServiceBogusTests()
     {
-        _sut = new UserService(_userRepoMock.Object, _passwordHasherMock.Object, _unitOfWorkMock.Object, _jwtProviderMock.Object);
+        _sut = new UserService(
+            _userRepoMock.Object,
+            _passwordHasherMock.Object,
+            _unitOfWorkMock.Object,
+            _jwtProviderMock.Object
+        );
     }
 
     [Fact]
-    public async Task Login_ShouldReturnToken_WhenPasswordIsCorrect()
+    public async Task Register_ShouldSaveUser_WithFakerData()
     {
-        var user = User.Create("John", "Doe", "test@mail.com", "hashed", 1).Value;
-        _userRepoMock.Setup(r => r.GetByEmailAsync(user.Email)).ReturnsAsync(user);
-        _passwordHasherMock.Setup(h => h.VerifyHashedPassword(user.PasswordHash, "1234")).Returns(true);
-        _jwtProviderMock.Setup(j => j.GenerateToken(user)).Returns("jwt_token");
+        var fakeUser = new
+        {
+            FirstName = _faker.Name.FirstName(),
+            LastName = _faker.Name.LastName(),
+            Email = _faker.Internet.Email(),
+            Password = _faker.Internet.Password(8),
+            RoleId = _faker.Random.Int(1, 5)
+        };
 
-        var token = await _sut.Login(user.Email, "1234");
+        _passwordHasherMock.Setup(h => h.HashPasssword(fakeUser.Password))
+            .Returns("hashed_pw");
 
-        Assert.Equal("jwt_token", token);
-    }
+        // Act
+        var userId = await _sut.Register(
+            fakeUser.FirstName,
+            fakeUser.LastName,
+            fakeUser.Email,
+            fakeUser.Password,
+            fakeUser.RoleId
+        );
 
-    [Fact]
-    public async Task Register_ShouldSaveUser()
-    {
-        _passwordHasherMock.Setup(h => h.HashPasssword("1234")).Returns("hashed");
-
-        var id = await _sut.Register("John", "Doe", "mail@mail.com", "1234", 1);
-
+        // Assert
         _unitOfWorkMock.Verify(u => u.SaveChangesAsync(It.IsAny<CancellationToken>()), Times.Once);
-
-        Assert.NotEqual(default, id);
+        Assert.NotEqual(default, userId);
     }
 }

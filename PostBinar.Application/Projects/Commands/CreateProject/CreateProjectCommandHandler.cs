@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using PostBinar.Application.Abstractions.Interfaces.Service;
+using PostBinar.Domain.Enums;
 using PostBinar.Domain.Projects;
 
 namespace PostBinar.Application.Projects.Commands.CreateProject;
@@ -24,7 +25,7 @@ public sealed class CreateProjectCommandHandler : IRequestHandler<CreateProjectC
         
         var member = await _projectMembershipService.AddMemberAsync(projectId, request.OwnerId);
 
-        await _membershipRoleService.AssignRoleAsync(member.Id, Domain.Enums.Role.Owner);
+        await _membershipRoleService.AssignRoleAsync(member.Id, Role.Owner);
 
         return projectId;
     }
