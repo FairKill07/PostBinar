@@ -15,27 +15,6 @@ namespace PostBinar.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "file_storages",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    ProjectId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ObjectType = table.Column<string>(type: "text", nullable: false),
-                    ObjectId = table.Column<Guid>(type: "uuid", nullable: false),
-                    FileName = table.Column<string>(type: "text", nullable: false),
-                    StorageKey = table.Column<string>(type: "text", nullable: false),
-                    MimeType = table.Column<string>(type: "text", nullable: false),
-                    Size = table.Column<long>(type: "bigint", nullable: false),
-                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_file_storages", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "note_categories",
                 columns: table => new
                 {
@@ -118,6 +97,33 @@ namespace PostBinar.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_task_categories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "file_storages",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ProjectId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ObjectType = table.Column<string>(type: "text", nullable: false),
+                    ObjectId = table.Column<Guid>(type: "uuid", nullable: false),
+                    FileName = table.Column<string>(type: "text", nullable: false),
+                    StorageKey = table.Column<string>(type: "text", nullable: false),
+                    MimeType = table.Column<string>(type: "text", nullable: false),
+                    Size = table.Column<long>(type: "bigint", nullable: false),
+                    CreatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_file_storages", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_file_storages_projects_ProjectId",
+                        column: x => x.ProjectId,
+                        principalTable: "projects",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -369,6 +375,11 @@ namespace PostBinar.Persistence.Migrations
                 name: "IX_comments_TaskItemId",
                 table: "comments",
                 column: "TaskItemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_file_storages_ProjectId",
+                table: "file_storages",
+                column: "ProjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_notes_ProjectId",

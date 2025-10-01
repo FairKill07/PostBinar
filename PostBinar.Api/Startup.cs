@@ -6,6 +6,7 @@ using PostBinar.Infrastructure.Authorization.Jwt;
 using PostBinar.Application.Common.Mappings;
 using System.Reflection;
 using PostBinar.Application.Abstractions.Interfaces;
+using PostBinar.Infrastructure.MinIO;
 
 namespace PostBinar.Api;
 
@@ -26,6 +27,7 @@ public class Startup
         // Options
         services.Configure<AuthorizationOptions>(_configuration.GetSection(nameof(AuthorizationOptions)));
         services.Configure<JwtOptions>(_configuration.GetSection(nameof(JwtOptions)));
+        services.Configure<MinioOptions>(_configuration.GetSection(nameof(MinioOptions)));
 
         //AutoMapper
         services.AddAutoMapper(config =>

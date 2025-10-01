@@ -13,10 +13,10 @@ internal sealed class FileStorageRepository : Repository<FileStorage, FileStorag
     public FileStorageRepository(PostBinarDbContext context) : base(context)
     {
     }
-    public Task<List<FileStorage>> GetByObjectAsync(ProjectId objectId, StorageObjectType storageObjectType)
+    public Task<List<FileStorage>> GetByObjectAsync(Guid objectId, StorageObjectType storageObjectType)
     {
         return context.FileStorages
-            .Where(fs => fs.ProjectId == objectId && fs.ObjectType == storageObjectType && fs.IsActive)
+            .Where(fs => fs.ObjectId == objectId && fs.ObjectType == storageObjectType && fs.IsActive)
             .ToListAsync();
     }
 }

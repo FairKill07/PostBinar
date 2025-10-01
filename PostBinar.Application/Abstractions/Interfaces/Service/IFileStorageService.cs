@@ -25,6 +25,6 @@ public interface IFileStorageService
         CancellationToken cancellationToken);
 
     Task<List<FileStorage>> GetFilesByObjectAsync(
-        ProjectId objectId,
+        Guid objectId,
         StorageObjectType storageObjectType);
 }

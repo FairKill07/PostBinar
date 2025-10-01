@@ -319,6 +319,8 @@ namespace PostBinar.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ProjectId");
+
                     b.ToTable("file_storages", (string)null);
                 });
 
@@ -580,6 +582,15 @@ namespace PostBinar.Persistence.Migrations
                         .HasForeignKey("TaskItemId");
                 });
 
+            modelBuilder.Entity("PostBinar.Domain.FileStorages.FileStorage", b =>
+                {
+                    b.HasOne("PostBinar.Domain.Projects.Project", null)
+                        .WithMany("FileStorages")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("PostBinar.Domain.Notes.Note", b =>
                 {
                     b.HasOne("PostBinar.Domain.Projects.Project", null)
@@ -640,6 +651,8 @@ namespace PostBinar.Persistence.Migrations
 
             modelBuilder.Entity("PostBinar.Domain.Projects.Project", b =>
                 {
+                    b.Navigation("FileStorages");
+
                     b.Navigation("Notes");
 
                     b.Navigation("ProjectMemberships");

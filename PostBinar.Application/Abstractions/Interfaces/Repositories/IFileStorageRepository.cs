@@ -9,5 +9,5 @@ public interface IFileStorageRepository
     void Add(FileStorage fileStorage);
     void Delete(FileStorage fileStorage);
     Task<FileStorage?> GetByIdAsync(FileStorageId fileStorageId);
-    Task<List<FileStorage>> GetByObjectAsync(ProjectId objectId, StorageObjectType storageObjectType);
+    Task<List<FileStorage>> GetByObjectAsync(Guid objectId, StorageObjectType storageObjectType);
 }
