@@ -20,6 +20,7 @@ public static class DependencyInjection
         services.AddTransient<IMembershipRoleRepository, MembershipRoleRepository>();
         services.AddTransient<ICategorySpecializationRepository, CategorySpecializationRepository>();
         services.AddTransient<IFileStorageRepository, FileStorageRepository>();
+        services.AddTransient<INoteRepository, NoteRepository>();
 
         services.AddDbContext<PostBinarDbContext>(options =>
         {

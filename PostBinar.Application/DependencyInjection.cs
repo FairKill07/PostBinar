@@ -20,6 +20,7 @@ public static class DependencyInjection
         services.AddTransient<IMembershipRoleService, MembershipRoleService>();
         services.AddTransient<ICategorySpecializationService, CategorySpecializationService>();
         services.AddTransient<IFileStorageService, FileStorageService>();
+        services.AddTransient<INoteService, NoteService>();
 
 
 
