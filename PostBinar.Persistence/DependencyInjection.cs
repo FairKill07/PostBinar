@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using PostBinar.Application.Abstractions.Interfaces;
 using PostBinar.Application.Abstractions.Interfaces.Repositories;
+using PostBinar.Persistence.Date;
 using PostBinar.Persistence.DbContects;
 using PostBinar.Persistence.Repositories;
 using PostBinar.Persistence.Repositories.Categorys;
@@ -22,13 +23,17 @@ public static class DependencyInjection
         services.AddTransient<IFileStorageRepository, FileStorageRepository>();
         services.AddTransient<INoteRepository, NoteRepository>();
 
+        var connectionString = configuration.GetConnectionString("DbConnection")
+                ?? throw new InvalidOperationException("Connection string 'DbConnection' not found.");
+
         services.AddDbContext<PostBinarDbContext>(options =>
         {
-            var connectionString = configuration.GetConnectionString("DbConnection");
             options.UseNpgsql(
                 connectionString,
                 b => b.MigrationsAssembly("PostBinar.Persistence"));
         });
+
+        services.AddSingleton<ISqlConnectionFactory>(_ => new SqlConnectionFactory(connectionString));
 
         services.AddScoped<IUnitOfWork>(serviceProvider =>
                 serviceProvider.GetRequiredService<PostBinarDbContext>());

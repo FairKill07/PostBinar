@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using PostBinar.Application.Notes.Commands.CreateNote;
 using PostBinar.Application.Notes.Commands.DeleteNote;
 using PostBinar.Application.Notes.Commands.UpdateNote;
+using PostBinar.Application.Notes.Queries.GetNoteById;
 using PostBinar.Domain.Notes;
 using PostBinar.Domain.Projects;
 using PostBinar.Domain.Users;
@@ -42,6 +43,7 @@ namespace PostBinar.Api.Controllers.Notes
             );
             return Ok(await _mediator.Send(command));
         }
+        
         [HttpDelete("{noteId:guid}")]
         public async Task<IActionResult> DeleteNote(Guid noteId, CancellationToken cancellationToken)
         {
@@ -49,6 +51,20 @@ namespace PostBinar.Api.Controllers.Notes
                 NoteId: new NoteId (noteId)
             );
             return Ok(await _mediator.Send(command));
+        }
+
+        [HttpGet("{noteId:guid}")]
+        public async Task<IActionResult> GetNoteById(Guid noteId, CancellationToken cancellationToken)
+        {
+            var query = new GetNoteByIdQuery(
+                NoteId: new NoteId(noteId)
+            );
+            var result = await _mediator.Send(query);
+            if (result == null)
+            {
+                return NotFound();
+            }
+            return Ok(result);
         }
 
     }
