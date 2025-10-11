@@ -405,7 +405,7 @@
                 setButtonLoading(button, true);
                 showResponse('createResponse', null, false, true);
 
-                const response = await fetch(`${getBaseUrl()}/api/Project`, {
+                const response = await fetch(`${getBaseUrl()}/api/Project/Create`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
