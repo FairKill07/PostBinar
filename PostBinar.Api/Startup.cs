@@ -68,12 +68,11 @@ public class Startup
         // HTTPS
         app.UseHttpsRedirection();
 
-        // Authorization
-        app.UseAuthorization();
-
         //Cors
         app.UseCors();
 
+        // Authorization
+        app.UseAuthorization();
 
         // Controllers
         app.MapControllers();

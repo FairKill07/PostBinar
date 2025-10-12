@@ -39,12 +39,6 @@ namespace PostBinar.Api.Controllers.Users
 
             HttpContext.Response.Cookies.Append("Cookies-PostBinar", token);
 
-            //HttpContext.Response.Cookies.Append("Cookies-PostBinar", token, new CookieOptions
-            //{
-            //    HttpOnly = true,
-            //    Secure = true,
-            //    Expires = DateTimeOffset.UtcNow.AddDays(7)
-            //});
 
             return Ok(token);
         }
