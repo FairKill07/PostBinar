@@ -60,8 +60,7 @@ public sealed class TaskItem : Abstraction.Entity<TaskItemId>
         string? description,
         DateTimeOffset? deadline,
         TaskItemStatus status,
-        TaskItemPriority priority,
-        DateTimeOffset createdAt)
+        TaskItemPriority priority)
     {
         if (projectId == null || projectId.Value == Guid.Empty)
             return Result.Failure<TaskItem>("Project ID is required");
@@ -80,7 +79,7 @@ public sealed class TaskItem : Abstraction.Entity<TaskItemId>
             deadline,
             status,
             priority,
-            createdAt);
+            DateTimeOffset.UtcNow);
 
         return Result.Success(taskItem);
     }

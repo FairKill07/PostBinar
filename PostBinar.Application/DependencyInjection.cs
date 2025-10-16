@@ -21,6 +21,7 @@ public static class DependencyInjection
         services.AddTransient<ICategorySpecializationService, CategorySpecializationService>();
         services.AddTransient<IFileStorageService, FileStorageService>();
         services.AddTransient<INoteService, NoteService>();
+        services.AddTransient<ITasksService, TasksService>();
 
 
 

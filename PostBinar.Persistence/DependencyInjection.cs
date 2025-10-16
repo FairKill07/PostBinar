@@ -22,6 +22,7 @@ public static class DependencyInjection
         services.AddTransient<ICategorySpecializationRepository, CategorySpecializationRepository>();
         services.AddTransient<IFileStorageRepository, FileStorageRepository>();
         services.AddTransient<INoteRepository, NoteRepository>();
+        services.AddTransient<ITasksRepository, TasksRepository>();
 
         var connectionString = configuration.GetConnectionString("DbConnection")
                 ?? throw new InvalidOperationException("Connection string 'DbConnection' not found.");
