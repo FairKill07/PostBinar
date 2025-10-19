@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using PostBinar.Application.Abstractions.Interfaces;
 using PostBinar.Application.Abstractions.Interfaces.IFileStorage;
 using PostBinar.Infrastructure.Authorization;
@@ -17,6 +16,7 @@ public static class DependencyInjection
         services.AddScoped<IJwtProvider, JwtProvider>();
         services.AddScoped<IFileStorage, MinIOFileStorage>();
         services.AddScoped<IFileHelper, MinioFileHelper>();
+        services.AddScoped<IQRCodeGenerator, QrCodeGeneratorService>();
 
         return services;
     }
