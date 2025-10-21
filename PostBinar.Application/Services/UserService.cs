@@ -43,4 +43,30 @@ public sealed class UserService : IUserService
 
         return user.Value.Id;
     }
+    
+    //public async Task<bool> Update(
+    //    string? email,
+    //    string? firstName,
+    //    string? lastName,
+    //    string? passwordHash,
+    //    int specializationId)
+    //{
+    //    User? user = await _userRepository.GetByEmailAsync(email);
+        
+    //    if (user == null) 
+    //        return false;
+        
+    //    if(!string.IsNullOrEmpty(firstName))
+    //        firstName = user.FirstName;
+    //    if(!string.IsNullOrEmpty(lastName))
+    //        lastName = user.LastName;
+    //    if(!string.IsNullOrEmpty(passwordHash))
+    //        passwordHash = user.PasswordHash;
+
+    //    var updateResult = user.Update(firstName, lastName, passwordHash, specializationId);
+
+    //    await _unitOfWork.SaveChangesAsync();
+
+    //    return true;
+    //}
 }

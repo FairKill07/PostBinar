@@ -15,6 +15,18 @@ namespace PostBinar.Persistence.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "assing_tasks",
+                columns: table => new
+                {
+                    TaskItemId = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_assing_tasks", x => x.TaskItemId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "note_categories",
                 columns: table => new
                 {
@@ -436,6 +448,9 @@ namespace PostBinar.Persistence.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "assing_tasks");
+
             migrationBuilder.DropTable(
                 name: "comments");
 

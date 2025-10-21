@@ -48,6 +48,8 @@ public sealed class PostBinarDbContext : DbContext, IPostBinarDbContext, IUnitOf
 
     public DbSet<Specialization> CategorySpecializations => Set<Specialization>();
 
+    public DbSet<AssingTask> AssingTasks => Set<AssingTask>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(PostBinarDbContext).Assembly);

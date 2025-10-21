@@ -12,7 +12,7 @@ using PostBinar.Persistence.DbContects;
 namespace PostBinar.Persistence.Migrations
 {
     [DbContext(typeof(PostBinarDbContext))]
-    [Migration("20250926145401_InitialCreate")]
+    [Migration("20251021160706_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -424,6 +424,19 @@ namespace PostBinar.Persistence.Migrations
                     b.HasIndex("OwnerId");
 
                     b.ToTable("projects", (string)null);
+                });
+
+            modelBuilder.Entity("PostBinar.Domain.TaskItems.AssingTask", b =>
+                {
+                    b.Property<Guid>("TaskItemId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("TaskItemId");
+
+                    b.ToTable("assing_tasks", (string)null);
                 });
 
             modelBuilder.Entity("PostBinar.Domain.TaskItems.TaskItem", b =>
