@@ -1,4 +1,4 @@
-﻿using CSharpFunctionalExtensions;
+﻿using PostBinar.Domain.Abstraction;
 using PostBinar.Domain.Enums;
 using PostBinar.Domain.Projects;
 using PostBinar.Domain.TaskItems;
@@ -12,7 +12,7 @@ public  interface ITasksService
     
     Task<List<TaskItem>> GetAllTasksAsync(ProjectId projectId);
    
-    Task<TaskItem> CreateTaskAsync(
+    Task<Result<TaskItemId>> CreateTaskAsync(
         ProjectId projectId, 
         UserId authorId, 
         int? categoryId, 

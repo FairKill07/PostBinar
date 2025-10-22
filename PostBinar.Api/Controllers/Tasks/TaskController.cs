@@ -32,7 +32,7 @@ namespace PostBinar.Api.Controllers.Tasks
                 Priority: (TaskItemPriority)request.Priority
             );
             var taskId = await _mediator.Send(command, cancellationToken);
-            return Ok(taskId);
+            return HandleResult(taskId);
         }
     }
 }

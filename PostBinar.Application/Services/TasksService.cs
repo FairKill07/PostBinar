@@ -1,7 +1,7 @@
-﻿using CSharpFunctionalExtensions;
-using PostBinar.Application.Abstractions.Interfaces;
+﻿using PostBinar.Application.Abstractions.Interfaces;
 using PostBinar.Application.Abstractions.Interfaces.Repositories;
 using PostBinar.Application.Abstractions.Interfaces.Service;
+using PostBinar.Domain.Abstraction;
 using PostBinar.Domain.Enums;
 using PostBinar.Domain.Projects;
 using PostBinar.Domain.TaskItems;
@@ -19,19 +19,19 @@ public sealed class TasksService : ITasksService
         _tasksRepository = tasksRepository;
         _unitOfWork = unitOfWork;
     }
-    public async Task<TaskItem> CreateTaskAsync(ProjectId projectId, UserId authorId, int? categoryId, string title, string? description, DateTimeOffset? deadline, TaskItemStatus status, TaskItemPriority priority)
+    
+    public async Task<Result<TaskItemId>> CreateTaskAsync(ProjectId projectId, UserId authorId, int? categoryId, string title, string? description, DateTimeOffset? deadline, TaskItemStatus status, TaskItemPriority priority)
     {
-        var task =  TaskItem.Create(projectId, authorId, categoryId, title, description, deadline, status, priority);
-        
-        if (task.IsFailure)
-        {
-            throw new InvalidOperationException(task.Error);
-        }
-        _tasksRepository.Add(task.Value);
+        Result<TaskItem> result = TaskItem.Create(projectId, authorId, categoryId, title, description, deadline, status, priority);
+        if (result.IsFailure)
+            return Result.Failure<TaskItemId>(result.Error);
+
+        TaskItem taskItem = result.Value;
+        _tasksRepository.Add(taskItem);
         
         await _unitOfWork.SaveChangesAsync();
 
-        return task.Value;
+        return taskItem.Id;
     }
 
     public async Task<Result> DeleteTaskAsync(TaskItem task)
@@ -73,13 +73,12 @@ public sealed class TasksService : ITasksService
     {
         var task = await _tasksRepository.GetTaskByIdAsync(taskId);
         if (task is null)
-            return Result.Failure("Task not found");
+            return Result.Failure(TaskErrors.NotFound);
 
-        var updateResult = task.Update(title, description, categoryId, status, priority, deadline);
-        if (updateResult.IsFailure)
-            return Result.Failure(updateResult.Error);
+        Result result = task.Update(title, description, categoryId, status, priority, deadline);
+        if (result.IsFailure)
+            return Result.Failure(result.Error);
 
-        _tasksRepository.Update(task);
         await _unitOfWork.SaveChangesAsync();
 
         return Result.Success();
