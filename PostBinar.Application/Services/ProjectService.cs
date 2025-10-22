@@ -39,7 +39,6 @@ namespace PostBinar.Application.Services
 
             project.Update(name, description);
 
-            _projectRepository.Update(project);
 
             await _unitOfWork.SaveChangesAsync();
 

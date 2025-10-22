@@ -4,8 +4,14 @@ namespace PostBinar.Application.Abstractions.Interfaces.Repositories;
 
 public interface IUserRepository
 {
-    Task<User?> GetByIdAsync(UserId id);
-    Task<User?> GetByEmailAsync(string email);
     void Add(User user);
     void Delete(User user);
+
+    Task<User?> GetByIdAsync(
+        UserId id,
+        CancellationToken cancellationToken = default);
+
+    Task<User?> GetByEmailAsync(
+        string email,
+        CancellationToken cancellationToken = default);
 }

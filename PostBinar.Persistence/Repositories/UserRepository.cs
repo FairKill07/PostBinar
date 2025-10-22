@@ -8,9 +8,12 @@ namespace PostBinar.Persistence.Repositories;
 internal sealed class UserRepository : Repository<User, UserId>, IUserRepository
 {
     public UserRepository(PostBinarDbContext context) : base(context) { }
-    public async Task<User?> GetByEmailAsync(string email)
+    
+    public async Task<User?> GetByEmailAsync(
+        string email,
+        CancellationToken cancellationToken)
     {
         return await _context.Users
-            .FirstOrDefaultAsync(u => u.Email == email);
+            .FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
     }
 }

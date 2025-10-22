@@ -1,4 +1,5 @@
-﻿using PostBinar.Domain.Abstraction;
+﻿using Microsoft.EntityFrameworkCore;
+using PostBinar.Domain.Abstraction;
 using PostBinar.Persistence.DbContects;
 
 namespace PostBinar.Persistence.Repositories;
@@ -10,9 +11,14 @@ where TEntityId : class
     protected readonly PostBinarDbContext _context;
     public Repository(PostBinarDbContext context) => _context = context;
 
-    public async Task<TEntity?> GetByIdAsync(TEntityId id)
+    public async Task<TEntity?> GetByIdAsync(
+        TEntityId id,
+        CancellationToken cancellationToken = default
+    )
     {
-        return await _context.Set<TEntity>().FindAsync(id);
+        return await 
+            _context.Set<TEntity>()
+            .FirstOrDefaultAsync(entity => entity.Id == id, cancellationToken);
     }
 
     public virtual void Add(TEntity entity)

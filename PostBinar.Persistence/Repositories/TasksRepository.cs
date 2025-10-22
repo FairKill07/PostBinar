@@ -6,24 +6,28 @@ using PostBinar.Persistence.DbContects;
 
 namespace PostBinar.Persistence.Repositories;
 
-internal class TasksRepository : Repository<TaskItem, TaskItemId> ,ITasksRepository 
+internal sealed class TasksRepository : Repository<TaskItem, TaskItemId>, ITasksRepository
 {
-    public TasksRepository(PostBinarDbContext context) : base(context)
+    public TasksRepository(PostBinarDbContext context) : base(context) { }
+
+    public async Task<IReadOnlyList<TaskItem>> GetAllTasksAsync(
+        ProjectId projectId,
+        CancellationToken cancellationToken = default)
     {
+        IQueryable<TaskItem> query = _context.TaskItems
+            .Where(ti => ti.ProjectId == projectId);
+
+        return await query
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<TaskItem>> GetAllTasksAsync(ProjectId projectId)
+    public async Task<TaskItem?> GetTaskByIdAsync(
+        TaskItemId taskItemId,
+        CancellationToken cancellationToken = default)
     {
-        return await _context.TaskItems.Where(ti => ti.ProjectId == projectId).ToListAsync();
-    }
-
-    public async Task<TaskItem?> GetTaskByIdAsync(TaskItemId taskItemId)
-    {
-        return await _context.TaskItems.FirstOrDefaultAsync(ti => ti.Id == taskItemId);
-    }
-
-    public void Update(TaskItem task)
-    {
-        _context.TaskItems.Update(task);
+        return await _context.TaskItems
+            .AsNoTracking()
+            .FirstOrDefaultAsync(ti => ti.Id == taskItemId, cancellationToken);
     }
 }

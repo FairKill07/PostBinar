@@ -7,7 +7,12 @@ public interface INoteRepository
 {
     void Add(Note note);
     void Delete(Note note);
-    void Update(Note note);
-    Task<Note?> GetByIdAsync(NoteId id);
-    Task<List<Note>> GetAllAsync(ProjectId projectId);
+    
+    Task<Note?> GetByIdAsync(
+        NoteId id,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<Note>> GetAllAsync(
+        ProjectId projectId,
+        CancellationToken cancellationToken = default);
 }

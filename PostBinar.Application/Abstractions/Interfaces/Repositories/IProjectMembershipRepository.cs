@@ -6,10 +6,19 @@ namespace PostBinar.Application.Abstractions.Interfaces.Repositories;
 
 public interface IProjectMembershipRepository
 {
-    Task<ProjectMembership?> GetMembershipAsync(ProjectId projectId, UserId userId); 
-    Task<List<ProjectMembership>> GetAllForProjectAsync(ProjectId projectId);  
-    Task<List<ProjectMembership>> GetAllForUserAsync(UserId userId);
     void Add(ProjectMembership membership);
     void Delete(ProjectMembership membership);
 
+    Task<ProjectMembership?> GetMembershipAsync(
+        ProjectId projectId, 
+        UserId userId,
+        CancellationToken cancellationToken = default); 
+
+    Task<IReadOnlyList<ProjectMembership>> GetAllForProjectAsync(
+        ProjectId projectId,
+        CancellationToken cancellationToken = default);  
+
+    Task<IReadOnlyList<ProjectMembership>> GetAllForUserAsync(
+        UserId userId,
+        CancellationToken cancellationToken = default);
 }

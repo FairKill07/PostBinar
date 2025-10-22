@@ -10,16 +10,15 @@ internal sealed class NoteRepository : Repository<Note, NoteId>, INoteRepository
 {
     public NoteRepository(PostBinarDbContext context) : base(context) { }
 
-    public async Task<List<Note>> GetAllAsync(ProjectId projectId)
+    public async Task<IReadOnlyList<Note>> GetAllAsync(
+        ProjectId projectId,
+        CancellationToken cancellationToken = default)
     {
-        var notes = await _context.Notes
-            .Where(n => n.ProjectId == projectId)
-            .ToListAsync();
-        return notes;
-    }
+        IQueryable<Note> query = _context.Notes
+            .Where(n => n.ProjectId == projectId);
 
-    public void Update(Note note)
-    {
-        _context.Notes.Update(note);
+        return await query
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
     }
 }

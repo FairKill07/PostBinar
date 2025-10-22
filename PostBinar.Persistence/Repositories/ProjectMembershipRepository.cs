@@ -1,34 +1,51 @@
-﻿using PostBinar.Domain.ProjectMemberships;
-using PostBinar.Persistence.DbContects;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using PostBinar.Application.Abstractions.Interfaces.Repositories;
+using PostBinar.Domain.ProjectMemberships;
 using PostBinar.Domain.Projects;
 using PostBinar.Domain.Users;
+using PostBinar.Persistence.DbContects;
 
 namespace PostBinar.Persistence.Repositories;
 
-internal sealed class ProjectMembershipRepository : Repository<ProjectMembership, ProjectMembershipId> , IProjectMembershipRepository
+internal sealed class ProjectMembershipRepository
+    : Repository<ProjectMembership, ProjectMembershipId>, IProjectMembershipRepository
 {
     public ProjectMembershipRepository(PostBinarDbContext context) : base(context) { }
 
-    public async Task<List<ProjectMembership>> GetAllForProjectAsync(ProjectId projectId)
+    public async Task<IReadOnlyList<ProjectMembership>> GetAllForProjectAsync(
+        ProjectId projectId,
+        CancellationToken cancellationToken = default)
     {
-        return await _context.ProjectMemberships
-            .Where(m => m.ProjectId == projectId)
-            .ToListAsync();
+        IQueryable<ProjectMembership> query = _context.ProjectMemberships
+            .Where(m => m.ProjectId == projectId);
+
+        return await query
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<List<ProjectMembership>> GetAllForUserAsync(UserId userId)
+    public async Task<IReadOnlyList<ProjectMembership>> GetAllForUserAsync(
+        UserId userId,
+        CancellationToken cancellationToken = default)
     {
-        return await _context.ProjectMemberships
+        IQueryable<ProjectMembership> query = _context.ProjectMemberships
             .Where(m => m.UserId == userId)
-            .Include(m => m.Project)
-            .ToListAsync();
+            .Include(m => m.Project);
+
+        return await query
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<ProjectMembership?> GetMembershipAsync(ProjectId projectId, UserId userId)
+    public async Task<ProjectMembership?> GetMembershipAsync(
+        ProjectId projectId,
+        UserId userId,
+        CancellationToken cancellationToken = default)
     {
         return await _context.ProjectMemberships
-            .FirstOrDefaultAsync(m => m.ProjectId == projectId && m.UserId == userId);
+            .FirstOrDefaultAsync(m =>
+                m.ProjectId == projectId &&
+                m.UserId == userId,
+                cancellationToken);
     }
 }
