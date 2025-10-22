@@ -1,10 +1,10 @@
-﻿using CSharpFunctionalExtensions;
+﻿using PostBinar.Domain.Abstraction;
 using PostBinar.Domain.Enums;
 using PostBinar.Domain.Projects;
 
 namespace PostBinar.Domain.FileStorages;
 
-public sealed class FileStorage : Abstraction.Entity<FileStorageId>
+public sealed class FileStorage : Entity<FileStorageId>
 {
     private FileStorage(
         FileStorageId id,
@@ -46,45 +46,38 @@ public sealed class FileStorage : Abstraction.Entity<FileStorageId>
 
 
     public static Result<FileStorage> Create(
-        ProjectId projectId,
-        StorageObjectType objectType,
-        Guid objectId,
-        string fileName,
-        string storageKey,
-        string mimeType,
-        long size)
+         ProjectId projectId,
+         StorageObjectType objectType,
+         Guid objectId,
+         string fileName,
+         string storageKey,
+         string mimeType,
+         long size)
     {
-        if (projectId == null || projectId.Value == Guid.Empty)
-            return Result.Failure<FileStorage>("Project ID is required");
-        if (objectId == Guid.Empty)
-            return Result.Failure<FileStorage>("Object ID is required");
-        if (string.IsNullOrWhiteSpace(fileName))
-            return Result.Failure<FileStorage>("File name is required");
-        if (string.IsNullOrWhiteSpace(storageKey))
-            return Result.Failure<FileStorage>("Storage key is required");
-        if (string.IsNullOrWhiteSpace(mimeType))
-            return Result.Failure<FileStorage>("Mime type is required");
-        if (size < 0)
-            return Result.Failure<FileStorage>("File size cannot be negative");
+        Result validationResult = ValidateParameters(projectId, objectId, fileName, storageKey, mimeType, size);
+        
+        if (validationResult.IsFailure)
+            return Result.Failure<FileStorage>(validationResult.Error);
 
         var fileStorage = new FileStorage(
             FileStorageId.New(),
             projectId,
             objectType,
             objectId,
-            fileName,
-            storageKey,
-            mimeType,
+            fileName.Trim(),
+            storageKey.Trim(),
+            mimeType.Trim(),
             size,
             DateTimeOffset.UtcNow);
 
-        return Result.Success(fileStorage);
+        return fileStorage;
     }
+
 
     public Result RenameFile(string newName)
     {
         if (string.IsNullOrWhiteSpace(newName))
-            return Result.Failure("File name cannot be empty");
+            return Result.Failure(FileStorageErrors.InvalidFileName);
 
         FileName = newName;
         UpdatedAt = DateTimeOffset.UtcNow;
@@ -95,11 +88,11 @@ public sealed class FileStorage : Abstraction.Entity<FileStorageId>
     public Result ChangeStorageKey(string newKey, long newSize, string newMimeType)
     {
         if (string.IsNullOrWhiteSpace(newKey))
-            return Result.Failure("Storage key is required");
+            return Result.Failure(FileStorageErrors.InvalidStorageKey);
         if (string.IsNullOrWhiteSpace(newMimeType))
-            return Result.Failure("Mime type is required");
+            return Result.Failure(FileStorageErrors.InvalidMimeType);
         if (newSize < 0)
-            return Result.Failure("File size cannot be negative");
+            return Result.Failure(FileStorageErrors.InvalidFileSize);
 
         StorageKey = newKey;
         Size = newSize;
@@ -112,7 +105,7 @@ public sealed class FileStorage : Abstraction.Entity<FileStorageId>
     public Result ReassignTo(Guid newObjectId, StorageObjectType newObjectType)
     {
         if (newObjectId == Guid.Empty)
-            return Result.Failure("Object ID is required");
+            return Result.Failure(FileStorageErrors.InvalidObjectId);
 
         ObjectId = newObjectId;
         ObjectType = newObjectType;
@@ -124,7 +117,7 @@ public sealed class FileStorage : Abstraction.Entity<FileStorageId>
     public Result Deactivate()
     {
         if (!IsActive)
-            return Result.Failure("File is already inactive");
+            return Result.Failure(FileStorageErrors.AlreadyInactive);
 
         IsActive = false;
         UpdatedAt = DateTimeOffset.UtcNow;
@@ -135,10 +128,39 @@ public sealed class FileStorage : Abstraction.Entity<FileStorageId>
     public Result Activate()
     {
         if (IsActive)
-            return Result.Failure("File is already active");
+            return Result.Failure(FileStorageErrors.AlreadyActive);
 
         IsActive = true;
         UpdatedAt = DateTimeOffset.UtcNow;
+
+        return Result.Success();
+    }
+
+    private static Result ValidateParameters(
+        ProjectId projectId,
+        Guid objectId,
+        string fileName,
+        string storageKey,
+        string mimeType,
+        long size)
+    {
+        if (projectId is null || projectId.Value == Guid.Empty)
+            return Result.Failure(FileStorageErrors.InvalidProjectId);
+
+        if (objectId == Guid.Empty)
+            return Result.Failure(FileStorageErrors.InvalidObjectId);
+
+        if (string.IsNullOrWhiteSpace(fileName))
+            return Result.Failure(FileStorageErrors.InvalidFileName);
+
+        if (string.IsNullOrWhiteSpace(storageKey))
+            return Result.Failure(FileStorageErrors.InvalidStorageKey);
+
+        if (string.IsNullOrWhiteSpace(mimeType))
+            return Result.Failure(FileStorageErrors.InvalidMimeType);
+
+        if (size < 0)
+            return Result.Failure(FileStorageErrors.InvalidFileSize);
 
         return Result.Success();
     }

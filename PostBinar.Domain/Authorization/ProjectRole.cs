@@ -1,7 +1,6 @@
-﻿using CSharpFunctionalExtensions;
+﻿using PostBinar.Domain.Abstraction;
 using PostBinar.Domain.Enums;
 using PostBinar.Domain.ProjectMemberships;
-using PostBinar.Domain.Users;
 
 namespace PostBinar.Domain.Authorization;
 
@@ -12,7 +11,9 @@ public sealed class ProjectRole
         ProjectMembershipId = projectMembershipId;
         RoleId = (int)role;
     }
+
     protected ProjectRole() { } // EF Core
+
     public ProjectMembershipId ProjectMembershipId { get; set; }
     public ProjectMembership ProjectMembership { get; set; } = null!;
 
@@ -22,13 +23,14 @@ public sealed class ProjectRole
     public static Result<ProjectRole> Create(ProjectMembershipId projectMembershipId, Role role)
     {
         if (projectMembershipId == null || projectMembershipId.Value == Guid.Empty)
-            return Result.Failure<ProjectRole>("Project Membership ID is required");
+            return Result.Failure<ProjectRole>(Error.NullValue);
         
         var projectRole = new ProjectRole
         {
             ProjectMembershipId = projectMembershipId,
             RoleId = (int)role
         };
-        return Result.Success(projectRole);
+
+        return projectRole;
     }
 }

@@ -1,5 +1,4 @@
-﻿using CSharpFunctionalExtensions;
-using PostBinar.Domain.Categorys;
+﻿using PostBinar.Domain.Abstraction;
 using PostBinar.Domain.Comments;
 using PostBinar.Domain.Enums;
 using PostBinar.Domain.Projects;
@@ -7,7 +6,7 @@ using PostBinar.Domain.Users;
 
 namespace PostBinar.Domain.TaskItems;
 
-public sealed class TaskItem : Abstraction.Entity<TaskItemId>
+public sealed class TaskItem : Entity<TaskItemId>
 {
     private readonly List<Comment> _comments = [];
 
@@ -62,12 +61,11 @@ public sealed class TaskItem : Abstraction.Entity<TaskItemId>
         TaskItemStatus status,
         TaskItemPriority priority)
     {
-        if (projectId == null || projectId.Value == Guid.Empty)
-            return Result.Failure<TaskItem>("Project ID is required");
-        if (authorId == null || authorId.Value == Guid.Empty)
-            return Result.Failure<TaskItem>("Author ID is required");
-        if (string.IsNullOrWhiteSpace(title))
-            return Result.Failure<TaskItem>("Title is required");
+        if (projectId is null || projectId.Value == Guid.Empty)
+            return Result.Failure<TaskItem>(Error.NullValue);
+
+        if (authorId is null || authorId.Value == Guid.Empty)
+            return Result.Failure<TaskItem>(Error.NullValue);
 
         var taskItem = new TaskItem(
             TaskItemId.New(),
@@ -81,7 +79,7 @@ public sealed class TaskItem : Abstraction.Entity<TaskItemId>
             priority,
             DateTimeOffset.UtcNow);
 
-        return Result.Success(taskItem);
+        return taskItem;
     }
 
     public Result Update(
@@ -92,8 +90,6 @@ public sealed class TaskItem : Abstraction.Entity<TaskItemId>
         TaskItemPriority priority,
         DateTimeOffset? deadline)
     {
-        if (string.IsNullOrWhiteSpace(title))
-            return Result.Failure("Title is required");
 
         Title = title;
         Description = description;
@@ -109,7 +105,7 @@ public sealed class TaskItem : Abstraction.Entity<TaskItemId>
     public Result Deactivate()
     {
         if (!IsActive)
-            return Result.Failure("Task is already deactivated");
+            return Result.Failure(TaskErrors.AlreadyDeactivated);
 
         IsActive = false;
         UpdatedAt = DateTimeOffset.UtcNow;

@@ -1,11 +1,11 @@
-﻿using CSharpFunctionalExtensions;
+﻿using PostBinar.Domain.Abstraction;
 using PostBinar.Domain.Enums;
 using PostBinar.Domain.Projects;
 using PostBinar.Domain.Users;
 
 namespace PostBinar.Domain.Comments;
 
-public sealed class Comment : Abstraction.Entity<CommentId>
+public sealed class Comment : Entity<CommentId>
 {
     private Comment(
         CommentId id,
@@ -47,11 +47,11 @@ public sealed class Comment : Abstraction.Entity<CommentId>
         string context)
     {
         if (authorId == null || authorId.Value == Guid.Empty)
-            return Result.Failure<Comment>("Author ID is required");
+            return Result.Failure<Comment>(CommentErrors.InvalidAuthorId);
         if (projectId == null || projectId.Value == Guid.Empty)
-            return Result.Failure<Comment>("Project ID is required");
+            return Result.Failure<Comment>(CommentErrors.InvalidProjectId);
         if (string.IsNullOrWhiteSpace(context))
-            return Result.Failure<Comment>("Comment text cannot be empty");
+            return Result.Failure<Comment>(CommentErrors.InvalidContext);
 
         var comment = new Comment(
             CommentId.New(),
@@ -67,9 +67,6 @@ public sealed class Comment : Abstraction.Entity<CommentId>
 
     public Result Update(string newContext)
     {
-        if (string.IsNullOrWhiteSpace(newContext))
-            return Result.Failure("Comment text cannot be empty");
-
         Context = newContext;
         UpdatedAt = DateTimeOffset.UtcNow;
 
@@ -79,7 +76,7 @@ public sealed class Comment : Abstraction.Entity<CommentId>
     public Result Deactivate()
     {
         if (!IsActive)
-            return Result.Failure("Comment is already inactive");
+            return Result.Failure(CommentErrors.AlreadyInactive);
 
         IsActive = false;
         UpdatedAt = DateTimeOffset.UtcNow;
@@ -90,7 +87,7 @@ public sealed class Comment : Abstraction.Entity<CommentId>
     public Result Activate()
     {
         if (IsActive)
-            return Result.Failure("Comment is already active");
+            return Result.Failure(CommentErrors.AlreadyActive);
 
         IsActive = true;
         UpdatedAt = DateTimeOffset.UtcNow;
