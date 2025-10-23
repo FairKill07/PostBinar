@@ -19,7 +19,8 @@ public sealed class RegisterCommnadHandler : IRequestHandler<RegisterCommand, Re
             request.LastName, 
             request.Email, 
             request.Password, 
-            request.SpecializationId);
+            request.SpecializationId,
+            request.CancellationToken);
         
         return userId;
     }

@@ -23,7 +23,8 @@ namespace PostBinar.Api.Controllers.Users
                 LastName: request.LastName,
                 Email: request.Email,
                 Password: request.Password,
-                SpecializationId: request.SpecializationId
+                SpecializationId: request.SpecializationId,
+                cancellationToken
             );
 
             return HandleResult(await _mediator.Send(command));
@@ -33,7 +34,8 @@ namespace PostBinar.Api.Controllers.Users
         {
             var command = new LogInCommand(
                 Email: request.Email,
-                Password: request.Password
+                Password: request.Password,
+                cancellationToken
             );
 
             var token = await _mediator.Send(command);

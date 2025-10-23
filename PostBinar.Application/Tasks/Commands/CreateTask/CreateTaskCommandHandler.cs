@@ -24,7 +24,8 @@ namespace PostBinar.Application.Tasks.Commands.CreateTask
                 request.Description,
                 request.Deadline,
                 request.Status,
-                request.Priority);
+                request.Priority,
+                request.CancellationToken);
             
             return task;
         }

@@ -12,7 +12,7 @@ public interface IProjectService
         UserId ownerId,
         CancellationToken cancellationToken);
 
-    Task<Result<Project>> UpdateProjectAsync(
+    Task<Result> UpdateProjectAsync(
         UserId ownerId, 
         ProjectId projectId, 
         string name, 

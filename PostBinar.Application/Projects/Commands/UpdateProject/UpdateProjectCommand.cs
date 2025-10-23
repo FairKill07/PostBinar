@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using PostBinar.Domain.Abstraction;
 using PostBinar.Domain.Projects;
 using PostBinar.Domain.Users;
 
@@ -8,4 +9,5 @@ public sealed record UpdateProjectCommand(
     UserId OwnerId,
     ProjectId ProjectId,
     string Name,
-    string Description) : IRequest<Project>;
+    string Description,
+    CancellationToken CancellationToken) : IRequest<Result>;

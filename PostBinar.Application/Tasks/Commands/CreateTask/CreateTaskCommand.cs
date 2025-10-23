@@ -15,4 +15,5 @@ public sealed record CreateTaskCommand(
     string? Description, 
     DateTimeOffset? Deadline, 
     TaskItemStatus Status, 
-    TaskItemPriority Priority) : IRequest<Result<TaskItemId>>;
+    TaskItemPriority Priority,
+    CancellationToken CancellationToken) : IRequest<Result<TaskItemId>>;

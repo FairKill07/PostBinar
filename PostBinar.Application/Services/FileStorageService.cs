@@ -29,7 +29,7 @@ public sealed class FileStorageService : IFileStorageService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<FileStorage> UploadFileAsync(
+    public async Task<Result<FileStorage>> UploadFileAsync(
         ProjectId projectId,
         Guid objectId,
         Stream fileStream,

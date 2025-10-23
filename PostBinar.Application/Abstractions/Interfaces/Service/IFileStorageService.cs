@@ -8,7 +8,7 @@ namespace PostBinar.Application.Abstractions.Interfaces.Service;
 
 public interface IFileStorageService
 {
-    Task<FileStorage> UploadFileAsync(
+    Task<Result<FileStorage>> UploadFileAsync(
         ProjectId projectId,
         Guid objectId,
         Stream fileStream,

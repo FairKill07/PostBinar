@@ -4,4 +4,7 @@ using PostBinar.Domain.Abstraction;
 
 namespace PostBinar.Application.Users.Commands.LogIn;
 
-public record LogInCommand(string Email , string Password) : IRequest<Result<AccessTokenResponse>>;
+public record LogInCommand(
+    string Email , 
+    string Password,
+    CancellationToken CancellationToken) : IRequest<Result<AccessTokenResponse>>;

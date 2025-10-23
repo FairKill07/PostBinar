@@ -36,7 +36,7 @@ public sealed class ProjectService : IProjectService
         return project.Id;
     }
 
-    public async Task<Result<Project>> UpdateProjectAsync(
+    public async Task<Result> UpdateProjectAsync(
         UserId ownerId,
         ProjectId projectId,
         string name,
@@ -56,7 +56,7 @@ public sealed class ProjectService : IProjectService
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return project;
+        return Result.Success();
     }
 
     public async Task<Result> Deactivate(ProjectId projectId, CancellationToken cancellationToken)

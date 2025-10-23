@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using PostBinar.Domain.Abstraction;
 using PostBinar.Domain.Notes;
 using PostBinar.Domain.Projects;
 using PostBinar.Domain.Users;
@@ -10,4 +11,5 @@ public sealed record CreateNoteCommand(
     UserId AuthorId,
     string Title,
     string? Content,
-    int? CategoryId) : IRequest<NoteId>;
+    int? CategoryId,
+    CancellationToken CancellationToken) : IRequest<Result<NoteId>>;

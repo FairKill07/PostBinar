@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using PostBinar.Application.Abstractions.Interfaces.Service;
+using PostBinar.Domain.Abstraction;
 
 namespace PostBinar.Application.Notes.Commands.UpdateNote;
 
-public sealed class UpdateNoteCommandHandler : IRequestHandler<UpdateNoteCommand, Unit>
+public sealed class UpdateNoteCommandHandler : IRequestHandler<UpdateNoteCommand, Result>
 {
     private readonly INoteService _noteService;
 
@@ -12,9 +13,18 @@ public sealed class UpdateNoteCommandHandler : IRequestHandler<UpdateNoteCommand
         _noteService = noteService;
     }
 
-    public async Task<Unit> Handle(UpdateNoteCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(UpdateNoteCommand request, CancellationToken cancellationToken)
     {
-        await _noteService.UpdateAsync(request.NoteId, request.Title, request.Content, request.CategoryId);
-        return Unit.Value;
+        var result = await _noteService.UpdateAsync(
+            noteId: request.NoteId,
+            title: request.Title,
+            content: request.Content,
+            categoryId: request.CategoryId,
+            cancellationToken:cancellationToken);
+
+        if (result.IsFailure)
+            return Result.Failure(result.Error);
+
+        return Result.Success();
     }
 }

@@ -6,7 +6,6 @@ using PostBinar.Application.Abstractions.Interfaces.Repositories;
 using PostBinar.Persistence.Date;
 using PostBinar.Persistence.DbContects;
 using PostBinar.Persistence.Repositories;
-using PostBinar.Persistence.Repositories.Categorys;
 
 namespace PostBinar.Persistence;
 

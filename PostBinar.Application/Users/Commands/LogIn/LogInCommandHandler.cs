@@ -16,7 +16,8 @@ public sealed class LogInCommandHandler : IRequestHandler<LogInCommand, Result<A
     {
         var token = await _userService.Login(
             request.Email, 
-            request.Password);
+            request.Password,
+            request.CancellationToken);
 
         return token;
     }
