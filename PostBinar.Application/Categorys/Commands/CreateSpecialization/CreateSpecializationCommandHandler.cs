@@ -12,7 +12,7 @@ public sealed class CreateSpecializationCommandHandler : IRequestHandler<CreateS
     }
     public async Task<int> Handle(CreateSpecializationCommand request, CancellationToken cancellationToken)
     {
-        var specialization = await _categorySpecializationService.CreateSpecializationAsync(request.Name, request.ColorCode);
-        return specialization.Id;
+        var specialization = await _categorySpecializationService.CreateSpecializationAsync(request.Name, request.ColorCode,cancellationToken);
+        return specialization.Value.Id;
     }
 }

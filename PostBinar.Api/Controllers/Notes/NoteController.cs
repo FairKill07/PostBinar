@@ -27,7 +27,8 @@ namespace PostBinar.Api.Controllers.Notes
                 AuthorId: new UserId(request.AuthorId),
                 Title: request.Title,
                 Content: request.Content,
-                CategoryId: request.CategoryId
+                CategoryId: request.CategoryId,
+                cancellationToken
             );
             return Ok(await _mediator.Send(command));
         }
@@ -39,7 +40,8 @@ namespace PostBinar.Api.Controllers.Notes
                 NoteId: request.NoteId,
                 Title: request.Title,
                 Content: request.Content,
-                CategoryId: request.CategoryId
+                CategoryId: request.CategoryId,
+                cancellationToken
             );
             return Ok(await _mediator.Send(command));
         }
@@ -48,7 +50,8 @@ namespace PostBinar.Api.Controllers.Notes
         public async Task<IActionResult> DeleteNote(Guid noteId, CancellationToken cancellationToken)
         {
             var command = new DeleteNoteCommand(
-                NoteId: new NoteId (noteId)
+                NoteId: new NoteId (noteId),
+                cancellationToken
             );
             return Ok(await _mediator.Send(command));
         }

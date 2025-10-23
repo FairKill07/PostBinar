@@ -31,7 +31,8 @@ public sealed class FileStoragesController : BaseController
             StorageObjectType: type,
             FileName: file.FileName,
             MimeType: file.ContentType,
-            Size: file.Length
+            Size: file.Length,
+            cancellationToken
         );
 
         var fileId = await _mediator.Send(command, cancellationToken);
@@ -58,7 +59,7 @@ public sealed class FileStoragesController : BaseController
         StorageObjectType type,
         CancellationToken cancellationToken)
     {
-        var query = new GetFilesByObjectQuery(objectId, type);
+        var query = new GetFilesByObjectQuery(objectId, type,cancellationToken);
         var files = await _mediator.Send(query, cancellationToken);
         return Ok(files);
     }
@@ -78,7 +79,7 @@ public sealed class FileStoragesController : BaseController
     [HttpGet]
     public async Task<IActionResult> GetFileDownloadUrl(Guid fileStorageId, CancellationToken cancellationToken)
     {
-        var query = new GetFileDownloadUrlQuery(new FileStorageId(fileStorageId));
+        var query = new GetFileDownloadUrlQuery(new FileStorageId(fileStorageId), cancellationToken);
         var url = await _mediator.Send(query, cancellationToken);
         return Ok(url);
     }

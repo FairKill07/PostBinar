@@ -24,7 +24,8 @@ public class ProjectController : BaseController
         var command = new CreateProjectCommand(
             Name: request.Name,
             Description: request.Description,
-            OwnerId: new UserId(request.OwnerId)
+            OwnerId: new UserId(request.OwnerId),
+            cancellationToken
         );
 
         var projectId = await _mediator.Send(command, cancellationToken);
@@ -38,7 +39,8 @@ public class ProjectController : BaseController
             OwnerId: new UserId(request.OwnerId),
             ProjectId: new ProjectId(request.ProjectId),
             Name: request.Name,
-            Description: request.Description
+            Description: request.Description,
+            cancellationToken
         );
         var project = await _mediator.Send(command, cancellationToken);
 
@@ -68,7 +70,7 @@ public class ProjectController : BaseController
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
-        await _mediator.Send(new DeleteProjectCommand(new ProjectId(id)), cancellationToken);
+        await _mediator.Send(new DeleteProjectCommand(new ProjectId(id),cancellationToken), cancellationToken);
         return NoContent();
     }
 

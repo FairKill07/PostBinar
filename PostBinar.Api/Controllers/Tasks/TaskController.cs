@@ -29,7 +29,8 @@ namespace PostBinar.Api.Controllers.Tasks
                 Description: request.Description,
                 Deadline: request.Deadline,
                 Status: (TaskItemStatus)request.Status,
-                Priority: (TaskItemPriority)request.Priority
+                Priority: (TaskItemPriority)request.Priority,
+                cancellationToken
             );
             var taskId = await _mediator.Send(command, cancellationToken);
             return HandleResult(taskId);

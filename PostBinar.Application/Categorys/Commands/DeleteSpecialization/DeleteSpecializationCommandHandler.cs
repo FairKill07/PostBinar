@@ -13,7 +13,7 @@ namespace PostBinar.Application.Categorys.Commands.DeleteSpecialization
 
         public Task<Unit> Handle(DeleteSpecializationCommnad request, CancellationToken cancellationToken)
         {
-            _categorySpecializationService.DeleteSpecializationAsync(request.SpecializationId);
+            _categorySpecializationService.DeleteSpecializationAsync(request.SpecializationId,cancellationToken);
             return Task.FromResult(Unit.Value);
         }
     }

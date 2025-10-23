@@ -21,9 +21,10 @@ namespace PostBinar.Application.Abstractions.Interfaces
         DbSet<FileStorage> FileStorages { get; }
         DbSet<Comment> Comments { get; }
         DbSet<NoteCategory> NoteCategories { get; }
-        DbSet<TaskCategory> TaskCategories { get; } 
+        DbSet<TaskCategory> TaskCategories { get; }
         DbSet<Specialization> Specializations { get; }
         DbSet<ProjectRole> ProjectRoles { get; }
         DbSet<Specialization> CategorySpecializations { get; }
+        DbSet<TaskMember> TaskMembers { get; }
     }
 }

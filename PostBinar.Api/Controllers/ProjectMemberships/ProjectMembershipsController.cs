@@ -21,7 +21,8 @@ public sealed class ProjectMembershipsController : BaseController
         var command = new AddMemberCommand(
             ProjectId: new ProjectId(request.ProjectId),
             UserId: new UserId(request.UserId),
-            Role: request.Role
+            Role: request.Role,
+            cancellationToken
         );
         var projectMembershipId = await _mediator.Send(command, cancellationToken);
         return Ok(projectMembershipId);
