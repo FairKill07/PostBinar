@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using PostBinar.Domain.Abstraction;
 using PostBinar.Domain.Enums;
 using PostBinar.Domain.Projects;
 using PostBinar.Domain.TaskItems;
@@ -14,4 +15,5 @@ public sealed record CreateTaskCommand(
     string? Description, 
     DateTimeOffset? Deadline, 
     TaskItemStatus Status, 
-    TaskItemPriority Priority) : IRequest<TaskItemId>;
+    TaskItemPriority Priority,
+    CancellationToken CancellationToken) : IRequest<Result<TaskItemId>>;

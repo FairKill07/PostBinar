@@ -4,6 +4,7 @@ using PostBinar.Application.Notes.Commands.CreateNote;
 using PostBinar.Application.Notes.Commands.DeleteNote;
 using PostBinar.Application.Notes.Commands.UpdateNote;
 using PostBinar.Application.Notes.Queries.GetNoteById;
+using PostBinar.Application.Notes.Queries.GetNoteByProject;
 using PostBinar.Domain.Notes;
 using PostBinar.Domain.Projects;
 using PostBinar.Domain.Users;
@@ -23,11 +24,12 @@ namespace PostBinar.Api.Controllers.Notes
         public async Task<IActionResult> CreateNote([FromBody] CreateNoteRequest request, CancellationToken cancellationToken)
         {
             var command = new CreateNoteCommand(
-                ProjectId: new ProjectId (request.ProjectId),
+                ProjectId: new ProjectId(request.ProjectId),
                 AuthorId: new UserId(request.AuthorId),
                 Title: request.Title,
                 Content: request.Content,
-                CategoryId: request.CategoryId
+                CategoryId: request.CategoryId,
+                cancellationToken
             );
             return Ok(await _mediator.Send(command));
         }
@@ -39,16 +41,18 @@ namespace PostBinar.Api.Controllers.Notes
                 NoteId: request.NoteId,
                 Title: request.Title,
                 Content: request.Content,
-                CategoryId: request.CategoryId
+                CategoryId: request.CategoryId,
+                cancellationToken
             );
             return Ok(await _mediator.Send(command));
         }
-        
+
         [HttpDelete("{noteId:guid}")]
         public async Task<IActionResult> DeleteNote(Guid noteId, CancellationToken cancellationToken)
         {
             var command = new DeleteNoteCommand(
-                NoteId: new NoteId (noteId)
+                NoteId: new NoteId(noteId),
+                cancellationToken
             );
             return Ok(await _mediator.Send(command));
         }
@@ -67,5 +71,15 @@ namespace PostBinar.Api.Controllers.Notes
             return Ok(result);
         }
 
+        [HttpGet("{projectId:guid}")]
+        public async Task<IActionResult> GetNotesByProjectId(Guid projectId, CancellationToken cancellationToken)
+        {
+            var query = new GetNoteByProjectQuery(
+                ProjectId: new ProjectId(projectId)
+            );
+
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
     }
 }

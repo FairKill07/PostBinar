@@ -1,10 +1,10 @@
-﻿using CSharpFunctionalExtensions;
+﻿using PostBinar.Domain.Abstraction;
 using PostBinar.Domain.Categorys;
 using PostBinar.Domain.ProjectMemberships;
 
 namespace PostBinar.Domain.Users;
 
-public sealed class User : Abstraction.Entity<UserId>
+public sealed class User : Entity<UserId>
 {
     private readonly List<ProjectMembership> _projectMemberships = [];
 
@@ -35,7 +35,7 @@ public sealed class User : Abstraction.Entity<UserId>
     public string Email { get; private set; } = null!;
     public string PasswordHash { get; private set; } = null!;
     public int SpecializationId { get; private set; }
-    public Specialization Specialization { get; private set; }
+    public Specialization Specialization { get; private set; } = null!;
     public string? ProfilePhoto { get; private set; }
     public string? TgChatId { get; private set; }
     public DateTimeOffset CreatedAt { get; private set; }
@@ -49,14 +49,12 @@ public sealed class User : Abstraction.Entity<UserId>
         string passwordHash,
         int specializationId)
     {
-        if (string.IsNullOrWhiteSpace(firstName))
-            return Result.Failure<User>("First name is required");
-        if (string.IsNullOrWhiteSpace(lastName))
-            return Result.Failure<User>("Last name is required");
-        if (string.IsNullOrWhiteSpace(email))
-            return Result.Failure<User>("Email is required");
-        if (string.IsNullOrWhiteSpace(passwordHash))
-            return Result.Failure<User>("Password hash is required");
+        Result validationResult = ValidateParameters(firstName, lastName, email, passwordHash);
+        
+        if (validationResult.IsFailure)
+        {
+            return Result.Failure<User>(validationResult.Error);
+        }
 
         var user = new User(
             UserId.New(),
@@ -67,7 +65,7 @@ public sealed class User : Abstraction.Entity<UserId>
             specializationId,
             DateTimeOffset.UtcNow);
 
-        return Result.Success(user);
+        return user;
     }
 
     public Result Update(
@@ -76,12 +74,6 @@ public sealed class User : Abstraction.Entity<UserId>
         string passwordHash,
         int specializationId)
     {
-        if (string.IsNullOrWhiteSpace(firstName))
-            return Result.Failure("First name is required");
-        if (string.IsNullOrWhiteSpace(lastName))
-            return Result.Failure("Last name is required");
-        if (string.IsNullOrWhiteSpace(passwordHash))
-            return Result.Failure("Password hash is required");
 
         FirstName = firstName;
         LastName = lastName;
@@ -102,5 +94,27 @@ public sealed class User : Abstraction.Entity<UserId>
     {
         TgChatId = tgChatId;
         UpdatedAt = DateTimeOffset.UtcNow;
+    }
+
+    private static Result ValidateParameters(
+        string firstName,
+        string lastName,
+        string email,
+        string passwordHash)
+    {
+        {
+            if (
+                string.IsNullOrWhiteSpace(firstName)
+                || string.IsNullOrWhiteSpace(lastName)
+                || string.IsNullOrWhiteSpace(email)
+                || string.IsNullOrWhiteSpace(passwordHash)
+            )
+            {
+                return Result.Failure(UserErrors.InvalidCredentials);
+            }
+
+            return Result.Success();
+        }
+
     }
 }

@@ -1,4 +1,4 @@
-﻿using CSharpFunctionalExtensions;
+﻿using PostBinar.Domain.Abstraction;
 using PostBinar.Domain.FileStorages;
 using PostBinar.Domain.Notes;
 using PostBinar.Domain.ProjectMemberships;
@@ -7,7 +7,7 @@ using PostBinar.Domain.Users;
 
 namespace PostBinar.Domain.Projects;
 
-public sealed class Project : Abstraction.Entity<ProjectId>
+public sealed class Project : Entity<ProjectId>
 {
     private readonly List<ProjectMembership> _projectMemberships = [];
     private readonly HashSet<TaskItem> _tasks = [];
@@ -51,11 +51,11 @@ public sealed class Project : Abstraction.Entity<ProjectId>
         UserId ownerId)
     {
         if (string.IsNullOrWhiteSpace(name))
-            return Result.Failure<Project>("Project name is required");
+            return Result.Failure<Project>(ProjectErrors.InvalidName);
         if (string.IsNullOrWhiteSpace(description))
-            return Result.Failure<Project>("Project description is required");
+            return Result.Failure<Project>(ProjectErrors.InvalidDescription);
         if (ownerId == null || ownerId.Value == Guid.Empty)
-            return Result.Failure<Project>("Owner ID is required");
+            return Result.Failure<Project>(ProjectErrors.InvalidOwnerId);
 
         var project = new Project(
             ProjectId.New(),
@@ -66,16 +66,11 @@ public sealed class Project : Abstraction.Entity<ProjectId>
             DateTimeOffset.UtcNow,
             true);
 
-        return Result.Success(project);
+        return project;
     }
 
     public Result Update(string name, string description)
     {
-        if (string.IsNullOrWhiteSpace(name))
-            return Result.Failure("Project name is required");
-        if (string.IsNullOrWhiteSpace(description))
-            return Result.Failure("Project description is required");
-
         Name = name;
         Description = description;
         UpdatedAt = DateTimeOffset.UtcNow;
@@ -86,14 +81,12 @@ public sealed class Project : Abstraction.Entity<ProjectId>
     public Result AddMember(UserId userId)
     {
         if (userId == null || userId.Value == Guid.Empty)
-            return Result.Failure("User ID is required");
+            return Result.Failure(Error.NullValue);
 
         if (_projectMemberships.Any(m => m.UserId == userId))
-            return Result.Failure("User is already a member");
+            return Result.Failure(ProjectErrors.UserAlreadyMember);
 
         var membership = ProjectMembership.Create(Id, userId);
-        if (membership.IsFailure)
-            return Result.Failure(membership.Error);
 
         _projectMemberships.Add(membership.Value);
         UpdatedAt = DateTimeOffset.UtcNow;
@@ -104,11 +97,11 @@ public sealed class Project : Abstraction.Entity<ProjectId>
     public Result RemoveMember(UserId userId)
     {
         if (OwnerId == userId)
-            return Result.Failure("Cannot remove project owner");
+            return Result.Failure(ProjectErrors.CannotRemoveOwner);
 
         var member = _projectMemberships.FirstOrDefault(m => m.UserId == userId);
         if (member == null)
-            return Result.Failure("User is not a member");
+            return Result.Failure(ProjectErrors.UserNotMember);
 
         _projectMemberships.Remove(member);
 
@@ -134,7 +127,7 @@ public sealed class Project : Abstraction.Entity<ProjectId>
     public Result Deactivate()
     {
         if (!IsActive)
-            return Result.Failure("Project is already inactive");
+            return Result.Failure(ProjectErrors.AlreadyInactive);
 
         IsActive = false;
         UpdatedAt = DateTimeOffset.UtcNow;
@@ -145,7 +138,7 @@ public sealed class Project : Abstraction.Entity<ProjectId>
     public Result Activate()
     {
         if (IsActive)
-            return Result.Failure("Project is already active");
+            return Result.Failure(ProjectErrors.AlreadyActive);
 
         IsActive = true;
         UpdatedAt = DateTimeOffset.UtcNow;

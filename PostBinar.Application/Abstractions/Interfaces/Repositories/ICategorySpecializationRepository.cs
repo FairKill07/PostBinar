@@ -6,6 +6,11 @@ public interface ICategorySpecializationRepository
 {
     void Add(Specialization specialization);
     void Delete(Specialization specialization);
-    Task<Specialization> GetByIdAsync(int categorySpecializationId);
-    Task<List<Specialization>> GetAllAsync();
+
+    Task<Specialization?> GetByIdAsync(
+        int categorySpecializationId,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<Specialization>> GetAllAsync(
+        CancellationToken cancellationToken = default);
 }

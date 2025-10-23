@@ -5,13 +5,14 @@ namespace PostBinar.Application.Abstractions.Interfaces.Repositories;
 
 public interface ITasksRepository
 {
-    Task<TaskItem?> GetTaskByIdAsync(TaskItemId taskItemId);
-
-    Task<List<TaskItem>> GetAllTasksAsync(ProjectId projectId);
-
     void Add(TaskItem task);
-
-    void Update(TaskItem task);
-
     void Delete(TaskItem task);
+
+    Task<TaskItem?> GetTaskByIdAsync(
+        TaskItemId taskItemId,
+        CancellationToken cancellationToken = default);
+
+    Task<IReadOnlyList<TaskItem>> GetAllTasksAsync(
+        ProjectId projectId,
+        CancellationToken cancellationToken = default);
 }

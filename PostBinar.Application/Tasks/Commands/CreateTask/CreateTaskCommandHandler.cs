@@ -1,10 +1,11 @@
 ﻿using MediatR;
 using PostBinar.Application.Abstractions.Interfaces.Service;
+using PostBinar.Domain.Abstraction;
 using PostBinar.Domain.TaskItems;
 
 namespace PostBinar.Application.Tasks.Commands.CreateTask
 {
-    public sealed class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, TaskItemId>
+    public sealed class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, Result<TaskItemId>>
     {
         private readonly ITasksService _tasksService;
         
@@ -13,7 +14,7 @@ namespace PostBinar.Application.Tasks.Commands.CreateTask
             _tasksService = tasksService;
         }
         
-        public async Task<TaskItemId> Handle(CreateTaskCommand request, CancellationToken cancellationToken)
+        public async Task<Result<TaskItemId>> Handle(CreateTaskCommand request, CancellationToken cancellationToken)
         {
             var task = await _tasksService.CreateTaskAsync(
                 request.ProjectId,
@@ -23,9 +24,10 @@ namespace PostBinar.Application.Tasks.Commands.CreateTask
                 request.Description,
                 request.Deadline,
                 request.Status,
-                request.Priority);
+                request.Priority,
+                request.CancellationToken);
             
-            return task.Id;
+            return task;
         }
     }
 }

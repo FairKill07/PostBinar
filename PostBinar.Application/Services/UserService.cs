@@ -1,6 +1,8 @@
 ﻿using PostBinar.Application.Abstractions.Interfaces;
 using PostBinar.Application.Abstractions.Interfaces.Repositories;
 using PostBinar.Application.Abstractions.Interfaces.Service;
+using PostBinar.Application.Common.Models.Users;
+using PostBinar.Domain.Abstraction;
 using PostBinar.Domain.Users;
 
 namespace PostBinar.Application.Services;
@@ -20,28 +22,47 @@ public sealed class UserService : IUserService
         _jwtProvider = jwtProvider;
     }
 
-    public async Task<string> Login(string email, string password)
+    public async Task<Result<AccessTokenResponse>> Login(string email, string password, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByEmailAsync(email);
+        var user = await _userRepository.GetByEmailAsync(email,cancellationToken);
+        if (user == null)
+            return Result.Failure<AccessTokenResponse>(UserErrors.NotFound);
 
         var result = _passwordHasher.VerifyHashedPassword(user.PasswordHash, password);
+        if (!result)
+            return Result.Failure<AccessTokenResponse>(UserErrors.InvalidCredentials);
 
         var token = _jwtProvider.GenerateToken(user);
 
         return token;
     }
 
-    public async Task<UserId> Register(string firstName, string lastName, string email, string password, int specializationId)
+    public async Task<Result<UserId>> Register(string firstName, string lastName, string email, string password, int specializationId, CancellationToken cancellationToken)
     {
         var hashPassword = _passwordHasher.HashPasssword(password);
 
-        var user = User.Create(firstName, lastName, email, hashPassword, specializationId);
+        Result<User> result = User.Create(firstName, lastName, email, hashPassword, specializationId);
 
-        _userRepository.Add(user.Value);
+        if (result.IsFailure)
+        {
+            return Result.Failure<UserId>(result.Error);
+        }
 
-        await _unitOfWork.SaveChangesAsync();
+        User user = result.Value;
 
-        return user.Value.Id;
+        try
+        {
+            _userRepository.Add(user);
+
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            return user.Id;
+        }
+        catch (Exception exception)
+            when (exception is HttpRequestException || exception is ArgumentNullException)
+        {
+            return Result.Failure<UserId>(UserErrors.RegistrationFailed);
+        }
     }
     
     //public async Task<bool> Update(

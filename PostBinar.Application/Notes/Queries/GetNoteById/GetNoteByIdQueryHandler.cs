@@ -2,8 +2,12 @@
 using MediatR;
 using PostBinar.Application.Abstractions.Interfaces;
 using PostBinar.Application.Notes.Queries.GetNoteById;
+using PostBinar.Domain.Abstraction;
+using System.Data;
 
-public sealed class GetNoteByIdQueryHandler : IRequestHandler<GetNoteByIdQuery, NoteDto?>
+namespace PostBinar.Application.Notes.Queries.GetNoteById;
+
+public sealed class GetNoteByIdQueryHandler : IRequestHandler<GetNoteByIdQuery, Result<NoteDto>>
 {
     private readonly ISqlConnectionFactory _sqlConnectionFactory;
 
@@ -12,7 +16,7 @@ public sealed class GetNoteByIdQueryHandler : IRequestHandler<GetNoteByIdQuery, 
         _sqlConnectionFactory = sqlConnectionFactory;
     }
 
-    public async Task<NoteDto?> Handle(GetNoteByIdQuery request, CancellationToken cancellationToken)
+    public async Task<Result<NoteDto>> Handle(GetNoteByIdQuery request, CancellationToken cancellationToken)
     {
         using var connection = _sqlConnectionFactory.CreateConnection();
 
@@ -25,13 +29,17 @@ public sealed class GetNoteByIdQueryHandler : IRequestHandler<GetNoteByIdQuery, 
                 n.""UpdatedAt"",
                 u.""FirstName"",
                 u.""LastName""
-            FROM ""notes"" n
-            INNER JOIN ""users"" u ON u.""Id"" = n.""AuthorId""
-            WHERE n.""Id"" = @NoteId";
+            FROM ""notes"" AS n
+            INNER JOIN ""users"" AS u ON u.""Id"" = n.""AuthorId""
+            WHERE n.""Id"" = @NoteId
+              AND n.""IsActive"" = TRUE;";
 
+        var note = await connection.QuerySingleOrDefaultAsync<NoteDto>(
+            new CommandDefinition(sql, new { NoteId = request.NoteId.Value }, cancellationToken: cancellationToken));
 
-        var note = await connection.QuerySingleOrDefaultAsync<NoteDto>(sql, new { NoteId = request.NoteId.Value });
+        if (note is null)
+            return Result.Failure<NoteDto>(Error.NoData);
 
-        return note;
+        return Result.Success(note);
     }
 }

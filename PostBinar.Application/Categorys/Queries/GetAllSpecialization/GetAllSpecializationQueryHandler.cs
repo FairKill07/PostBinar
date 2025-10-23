@@ -13,9 +13,9 @@ namespace PostBinar.Application.Categorys.Queries.GetAllSpecialization
         }
         public async Task<SpecializationListVm> Handle(GetAllSpecializationQuery request, CancellationToken cancellationToken)
         {
-            var specializations = await _categorySpecializationService.GetAllSpecializationsAsync();
+            var specializations = await _categorySpecializationService.GetAllSpecializationsAsync(cancellationToken);
             
-            var specializationVm = specializations.Select(s => new Specialization
+            var specializationVm = specializations.Value.Select(s => new Specialization
             {
                 Id = s.Id,
                 Name = s.Name,

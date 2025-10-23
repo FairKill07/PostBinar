@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using PostBinar.Application.Abstractions.Interfaces;
+using PostBinar.Application.Common.Models.Users;
 using PostBinar.Domain.Users;
 
 namespace PostBinar.Infrastructure.Authorization.Jwt;
@@ -15,28 +16,31 @@ public sealed class JwtProvider : IJwtProvider
     {
         _options = options.Value;
     }
-    public string GenerateToken(User user)
+
+    public AccessTokenResponse GenerateToken(User user)
     {
-        Claim[] claims = new Claim[]
+        var claims = new[]
         {
-            new("UserId", user.Id.Value.ToString()),
-            new("Email", user.Email.ToString()),
-            new("FullName", user.FullName.ToString()),
-        };
+        new Claim("UserId", user.Id.Value.ToString()),
+        new Claim("Email", user.Email.ToString()),
+        new Claim("FullName", user.FullName.ToString()),
+    };
 
         var signingCredentials = new SigningCredentials(
-            new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_options.SecretKey)),
-                SecurityAlgorithms.HmacSha256);
+            new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.SecretKey)),
+            SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
             claims: claims,
             signingCredentials: signingCredentials,
-            expires: DateTime.UtcNow.AddHours(_options.TokenExpirationInHours)
-            );
+            expires: DateTime.UtcNow.AddHours(_options.TokenExpirationInHours));
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+        return new AccessTokenResponse(tokenString,_options.TokenExpirationInHours);
     }
+
+
 
     public bool ValidateToken(string token, out Guid userId, out string email, out string fullName)
     {

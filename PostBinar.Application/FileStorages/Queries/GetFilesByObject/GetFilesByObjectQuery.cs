@@ -4,4 +4,7 @@ using PostBinar.Domain.Projects;
 
 namespace PostBinar.Application.FileStorages.Queries.GetFilesByObject;
 
-public sealed record GetFilesByObjectQuery (Guid ObjectId , StorageObjectType StorageObjectType) : IRequest<FileListVm>;
+public sealed record GetFilesByObjectQuery (
+    Guid ObjectId , 
+    StorageObjectType StorageObjectType,
+    CancellationToken CancellationToken) : IRequest<FileListVm>;

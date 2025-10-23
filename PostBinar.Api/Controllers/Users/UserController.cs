@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PostBinar.Application.Users.Commands.LogIn;
 using PostBinar.Application.Users.Commands.Register;
+using PostBinar.Domain.Abstraction;
 
 namespace PostBinar.Api.Controllers.Users
 {
@@ -22,25 +23,36 @@ namespace PostBinar.Api.Controllers.Users
                 LastName: request.LastName,
                 Email: request.Email,
                 Password: request.Password,
-                SpecializationId: request.SpecializationId
+                SpecializationId: request.SpecializationId,
+                cancellationToken
             );
 
-            return Ok(await _mediator.Send(command));
+            return HandleResult(await _mediator.Send(command));
         }
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LogInUserRequest request, CancellationToken cancellationToken)
         {
             var command = new LogInCommand(
                 Email: request.Email,
-                Password: request.Password
+                Password: request.Password,
+                cancellationToken
             );
 
             var token = await _mediator.Send(command);
 
-            HttpContext.Response.Cookies.Append("Cookies-PostBinar", token);
+            if (token.IsFailure)
+            {
+                return HandleResult(token);
+            }
 
+            var cookieOptions = new CookieOptions
+            {
+                Expires = DateTimeOffset.UtcNow.AddHours(token.Value.ExpiresIn)
+            };
 
-            return Ok(token);
+            HttpContext.Response.Cookies.Append("Cookies-PostBinar", token.Value.AccessToken, cookieOptions);
+
+            return HandleResult(token);
         }
     }
 }

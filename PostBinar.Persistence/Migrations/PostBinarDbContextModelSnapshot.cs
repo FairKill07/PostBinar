@@ -487,6 +487,21 @@ namespace PostBinar.Persistence.Migrations
                     b.ToTable("task_items", (string)null);
                 });
 
+            modelBuilder.Entity("PostBinar.Domain.TaskItems.TaskMember", b =>
+                {
+                    b.Property<Guid>("TaskId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("TaskId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("tasks_member", (string)null);
+                });
+
             modelBuilder.Entity("PostBinar.Domain.Users.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -637,6 +652,21 @@ namespace PostBinar.Persistence.Migrations
                     b.HasOne("PostBinar.Domain.Projects.Project", null)
                         .WithMany("Tasks")
                         .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PostBinar.Domain.TaskItems.TaskMember", b =>
+                {
+                    b.HasOne("PostBinar.Domain.TaskItems.TaskItem", null)
+                        .WithMany()
+                        .HasForeignKey("TaskId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PostBinar.Domain.Users.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

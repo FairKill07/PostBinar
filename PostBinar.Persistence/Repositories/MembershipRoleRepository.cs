@@ -9,10 +9,12 @@ namespace PostBinar.Persistence.Repositories;
 internal sealed class MembershipRoleRepository : IMembershipRoleRepository
 {
     private readonly PostBinarDbContext _context;
-    public MembershipRoleRepository(PostBinarDbContext context) 
+
+    public MembershipRoleRepository(PostBinarDbContext context)
     {
         _context = context;
     }
+
     public void Add(ProjectRole projectRole)
     {
         _context.ProjectRoles.Add(projectRole);
@@ -23,20 +25,23 @@ internal sealed class MembershipRoleRepository : IMembershipRoleRepository
         _context.ProjectRoles.Remove(projectRole);
     }
 
-    public async Task<ProjectRole> GetByIdAsync(ProjectMembershipId projectMembershipId)
+    public async Task<ProjectRole?> GetByIdAsync(
+        ProjectMembershipId projectMembershipId,
+        CancellationToken cancellationToken = default)
     {
-        var projectRole = await _context.ProjectRoles.FindAsync(projectMembershipId);
-        if (projectRole == null)
-        {
-            throw new InvalidOperationException($"ProjectRole with ID {projectMembershipId.Value} not found.");
-        }
+        var projectRole = await _context.ProjectRoles
+            .FirstOrDefaultAsync(pr => pr.ProjectMembershipId == projectMembershipId, cancellationToken);
+
         return projectRole;
     }
 
-    public async Task<IEnumerable<ProjectMembership>> GetRolesForMembershipAsync(ProjectMembershipId projectMembershipId)
-    {
+    public async Task<IEnumerable<ProjectMembership>> GetRolesForMembershipAsync(
+        ProjectMembershipId projectMembershipId,
+        CancellationToken cancellationToken) 
+    { 
         return await _context.ProjectMemberships
-                     .Where(pm => pm.Id == projectMembershipId)
-                     .ToListAsync();
+            .Where(pm => pm.Id == projectMembershipId)
+            .ToListAsync(cancellationToken); 
     }
+
 }

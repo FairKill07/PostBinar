@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using PostBinar.Domain.Abstraction;
 using PostBinar.Domain.Enums;
 using PostBinar.Domain.FileStorages;
 using PostBinar.Domain.Projects;
@@ -12,4 +13,5 @@ public sealed record UploadFileCommand(
         StorageObjectType StorageObjectType,
         string FileName,
         string? MimeType,
-        long Size) : IRequest<FileStorageId>;
+        long Size,
+        CancellationToken CancellationToken) : IRequest<Result<FileStorageId>>;

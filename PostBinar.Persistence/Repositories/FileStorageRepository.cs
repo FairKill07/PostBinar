@@ -2,7 +2,6 @@
 using PostBinar.Application.Abstractions.Interfaces.Repositories;
 using PostBinar.Domain.Enums;
 using PostBinar.Domain.FileStorages;
-using PostBinar.Domain.Projects;
 using PostBinar.Persistence.DbContects;
 
 namespace PostBinar.Persistence.Repositories;
@@ -12,10 +11,18 @@ internal sealed class FileStorageRepository : Repository<FileStorage, FileStorag
     public FileStorageRepository(PostBinarDbContext context) : base(context)
     {
     }
-    public Task<List<FileStorage>> GetByObjectAsync(Guid objectId, StorageObjectType storageObjectType)
+
+    public async Task<IReadOnlyList<FileStorage>> GetByObjectAsync(
+        Guid objectId,
+        StorageObjectType storageObjectType,
+        CancellationToken cancellationToken = default)
     {
-        return _context.FileStorages
-            .Where(fs => fs.ObjectId == objectId && fs.ObjectType == storageObjectType && fs.IsActive)
-            .ToListAsync();
+        IQueryable<FileStorage> query = _context.FileStorages
+            .Where(fs => fs.ObjectId == objectId &&
+                         fs.ObjectType == storageObjectType &&
+                         fs.IsActive);
+
+        var list = await query.ToListAsync(cancellationToken);
+        return list;
     }
 }

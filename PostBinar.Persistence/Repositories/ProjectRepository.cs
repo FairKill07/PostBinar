@@ -10,8 +10,4 @@ internal sealed class ProjectRepository : Repository<Project, ProjectId>, IProje
 {
     public ProjectRepository(PostBinarDbContext context) : base(context) { }
 
-    public void Update(Project project)
-    {
-        _context.Projects.Update(project);
-    }
 }

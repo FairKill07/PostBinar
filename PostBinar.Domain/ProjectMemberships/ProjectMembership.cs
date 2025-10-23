@@ -1,11 +1,11 @@
-﻿using CSharpFunctionalExtensions;
+﻿using PostBinar.Domain.Abstraction;
 using PostBinar.Domain.Authorization;
 using PostBinar.Domain.Projects;
 using PostBinar.Domain.Users;
 
 namespace PostBinar.Domain.ProjectMemberships;
 
-public sealed class ProjectMembership : Abstraction.Entity<ProjectMembershipId>
+public sealed class ProjectMembership : Entity<ProjectMembershipId>
 {
     private readonly List<ProjectRole> _roles = [];
     private ProjectMembership(
@@ -33,9 +33,9 @@ public sealed class ProjectMembership : Abstraction.Entity<ProjectMembershipId>
     public static Result<ProjectMembership> Create(ProjectId projectId, UserId userId)
     {
         if (projectId == null || projectId.Value == Guid.Empty)
-            return Result.Failure<ProjectMembership>("Project ID is required");
+            return Result.Failure<ProjectMembership>(Error.NullValue);
         if (userId == null || userId.Value == Guid.Empty)
-            return Result.Failure<ProjectMembership>("User ID is required");
+            return Result.Failure<ProjectMembership>(Error.NullValue);
 
         var membership = new ProjectMembership(
             ProjectMembershipId.New(),
@@ -43,6 +43,6 @@ public sealed class ProjectMembership : Abstraction.Entity<ProjectMembershipId>
             userId,
             DateTimeOffset.UtcNow);
 
-        return Result.Success(membership);
+        return membership;
     }
 }

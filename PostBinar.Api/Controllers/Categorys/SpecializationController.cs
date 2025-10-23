@@ -4,38 +4,51 @@ using PostBinar.Application.Categorys.Commands.CreateSpecialization;
 using PostBinar.Application.Categorys.Commands.DeleteSpecialization;
 using PostBinar.Application.Categorys.Queries.GetAllSpecialization;
 
-namespace PostBinar.Api.Controllers.Categorys;
-
-public class SpecializationController :BaseController
+namespace PostBinar.Api.Controllers.Categorys
 {
-    private readonly IMediator _mediator;
-    public SpecializationController(IMediator mediator)
+    [ApiController]
+    [Route("api/[controller]/[action]")]
+    public sealed class SpecializationController : BaseController
     {
-        _mediator = mediator;
-    }
+        private readonly IMediator _mediator;
 
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateSpecializationRequest request , CancellationToken cancellationToken)
-    {
-        var specializationId = await _mediator.Send(new CreateSpecializationCommand(
-            Name: request.Name,
-            ColorCode: request.ColorCode), cancellationToken);
-        
-        return Ok(specializationId);
-    }
+        public SpecializationController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
 
-    [HttpDelete("{id}")]
-    public async Task<IActionResult> Delete([FromRoute] int id, CancellationToken cancellationToken)
-    {
-        await _mediator.Send(new DeleteSpecializationCommnad(id), cancellationToken);
-        return NoContent();
-    }
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CreateSpecializationRequest request, CancellationToken cancellationToken)
+        {
+            var command = new CreateSpecializationCommand(
+                Name: request.Name,
+                ColorCode: request.ColorCode,
+                cancellationToken
+            );
 
-    [HttpGet]
-    public async Task<IActionResult> GetAllSpecializations(CancellationToken cancellationToken)
-    {
-        var specializations = await _mediator.Send(new GetAllSpecializationQuery(), cancellationToken);
-        return Ok(specializations);
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return HandleResult(result);
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete([FromRoute] int id, CancellationToken cancellationToken)
+        {
+            var command = new DeleteSpecializationCommand(id, cancellationToken);
+
+            var result = await _mediator.Send(command, cancellationToken);
+
+            return HandleResult(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllSpecializations(CancellationToken cancellationToken)
+        {
+            var query = new GetAllSpecializationQuery();
+
+            var result = await _mediator.Send(query, cancellationToken);
+
+            return Ok(result);
+        }
     }
-    
 }

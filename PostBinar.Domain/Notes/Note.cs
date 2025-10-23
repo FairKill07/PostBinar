@@ -1,12 +1,11 @@
-﻿using CSharpFunctionalExtensions;
-using PostBinar.Domain.Categorys;
+﻿using PostBinar.Domain.Abstraction;
 using PostBinar.Domain.Comments;
 using PostBinar.Domain.Projects;
 using PostBinar.Domain.Users;
 
 namespace PostBinar.Domain.Notes;
 
-public sealed class Note : Abstraction.Entity<NoteId>
+public sealed class Note : Entity<NoteId>
 {
     private readonly List<Comment> _comments = [];
     private Note(
@@ -50,11 +49,11 @@ public sealed class Note : Abstraction.Entity<NoteId>
         int? categoryId)
     {
         if (projectId == null || projectId.Value == Guid.Empty)
-            return Result.Failure<Note>("Project ID is required");
+            return Result.Failure<Note>(NoteErrors.InvalidProjectId);
         if (authorId == null || authorId.Value == Guid.Empty)
-            return Result.Failure<Note>("Author ID is required");
+            return Result.Failure<Note>(NoteErrors.InvalidAuthorId);
         if (string.IsNullOrWhiteSpace(title))
-            return Result.Failure<Note>("Title is required");
+            return Result.Failure<Note>(NoteErrors.InvalidTitle);
 
         var now = DateTimeOffset.UtcNow;
         var note = new Note(
@@ -66,7 +65,7 @@ public sealed class Note : Abstraction.Entity<NoteId>
             categoryId,
             now);
 
-        return Result.Success(note);
+        return note;
     }
 
     public Result Update(
@@ -74,9 +73,6 @@ public sealed class Note : Abstraction.Entity<NoteId>
         string? content,
         int? categoryId)
     {
-        if (string.IsNullOrWhiteSpace(title))
-            return Result.Failure("Title is required");
-
         Title = title;
         Content = content;
         CategoryId = categoryId;
@@ -88,7 +84,7 @@ public sealed class Note : Abstraction.Entity<NoteId>
     public Result Deactivate()
     {
         if (!IsActive)
-            return Result.Failure("Note is already inactive");
+            return Result.Failure(NoteErrors.AlreadyInactive);
 
         IsActive = false;
         UpdatedAt = DateTimeOffset.UtcNow;
@@ -99,7 +95,7 @@ public sealed class Note : Abstraction.Entity<NoteId>
     public Result Activate()
     {
         if (IsActive)
-            return Result.Failure("Note is already active");
+            return Result.Failure(NoteErrors.AlreadyActive);
 
         IsActive = true;
         UpdatedAt = DateTimeOffset.UtcNow;

@@ -1,9 +1,10 @@
 ﻿using MediatR;
 using PostBinar.Application.Abstractions.Interfaces.Service;
+using PostBinar.Domain.Abstraction;
 
 namespace PostBinar.Application.Projects.Commands.DeleteProject;
 
-public sealed class DeleteProjectCommandHandler : IRequestHandler<DeleteProjectCommand, Unit>
+public sealed class DeleteProjectCommandHandler : IRequestHandler<DeleteProjectCommand, Result>
 {
     private readonly IProjectService _projectService;
 
@@ -12,9 +13,13 @@ public sealed class DeleteProjectCommandHandler : IRequestHandler<DeleteProjectC
         _projectService = projectService;
     }
 
-    public async Task<Unit> Handle(DeleteProjectCommand request, CancellationToken cancellationToken)
+    public async Task<Result> Handle(DeleteProjectCommand request, CancellationToken cancellationToken)
     {
-        await _projectService.DeleteProject(request.ProjectId);
-        return Unit.Value;
+        var result = await _projectService.DeleteProject(request.ProjectId, cancellationToken);
+
+        if (result.IsFailure)
+            return Result.Failure(result.Error);
+
+        return Result.Success();
     }
 }

@@ -15,9 +15,9 @@ namespace PostBinar.Application.Projects.Queries.GetAllProject
         }
         public async Task<ProjectListVm> Handle(GetAllProjectQuery request, CancellationToken cancellationToken)
         {
-            var projects = await _projectMembershipService.GetAllProjectUserAsync(request.UserId);
+            var projects = await _projectMembershipService.GetAllProjectUserAsync(request.UserId, cancellationToken);
 
-            var projectDtos = _mapper.Map<List<ProjectLookUpDto>>(projects);
+            var projectDtos = _mapper.Map<List<ProjectLookUpDto>>(projects.Value);
 
             return new ProjectListVm { Projects = projectDtos };
         }
