@@ -8,9 +8,13 @@ namespace PostBinar.Application.Abstractions.Interfaces.Service;
 
 public  interface ITasksService
 {
-    Task<TaskItem?> GetTaskByIdAsync(TaskItemId taskItemId);
+    Task<Result<TaskItem?>> GetTaskByIdAsync(
+        TaskItemId taskItemId,
+        CancellationToken cancellationToken);
     
-    Task<List<TaskItem>> GetAllTasksAsync(ProjectId projectId);
+    Task<Result<IReadOnlyList<TaskItem>>> GetAllTasksAsync(
+        ProjectId projectId,
+        CancellationToken cancellationToken);
    
     Task<Result<TaskItemId>> CreateTaskAsync(
         ProjectId projectId, 
@@ -20,7 +24,8 @@ public  interface ITasksService
         string? description,
         DateTimeOffset? deadline,
         TaskItemStatus status,
-        TaskItemPriority priority);
+        TaskItemPriority priority,
+        CancellationToken cancellationToken);
     
     Task<Result> UpdateTaskAsync(
         TaskItemId taskId,
@@ -29,7 +34,10 @@ public  interface ITasksService
         int? categoryId,
         TaskItemStatus status,
         TaskItemPriority priority,
-        DateTimeOffset? deadline);
+        DateTimeOffset? deadline,
+        CancellationToken cancellationToken);
     
-    Task<Result> DeleteTaskAsync(TaskItem taskId);
+    Task<Result> DeleteTaskAsync(
+        TaskItem taskId,
+        CancellationToken cancellationToken);
 }

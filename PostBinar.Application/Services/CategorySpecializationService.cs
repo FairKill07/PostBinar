@@ -1,7 +1,10 @@
-﻿using PostBinar.Application.Abstractions.Interfaces.Repositories;
+﻿using PostBinar.Application.Abstractions.Interfaces;
+using PostBinar.Application.Abstractions.Interfaces.Repositories;
 using PostBinar.Application.Abstractions.Interfaces.Service;
-using PostBinar.Application.Abstractions.Interfaces;
+using PostBinar.Domain.Abstraction;
 using PostBinar.Domain.Categorys;
+
+namespace PostBinar.Application.Services;
 
 public sealed class CategorySpecializationService : ICategorySpecializationService
 {
@@ -16,7 +19,10 @@ public sealed class CategorySpecializationService : ICategorySpecializationServi
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Specialization> CreateSpecializationAsync(string name, string colorCode)
+    public async Task<Result<Specialization>> CreateSpecializationAsync(
+        string name,
+        string colorCode,
+        CancellationToken cancellationToken)
     {
         var specialization = new Specialization
         {
@@ -25,33 +31,43 @@ public sealed class CategorySpecializationService : ICategorySpecializationServi
         };
 
         _categorySpecializationRepository.Add(specialization);
-        await _unitOfWork.SaveChangesAsync(); 
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-        return specialization;
+        return Result.Success(specialization);
     }
 
-    public async Task DeleteSpecializationAsync(int specializationId)
+    public async Task<Result> DeleteSpecializationAsync(
+        int specializationId,
+        CancellationToken cancellationToken)
     {
-        var specialization = await _categorySpecializationRepository.GetByIdAsync(specializationId);
-        if (specialization != null)
-        {
-            _categorySpecializationRepository.Delete(specialization);
-            await _unitOfWork.SaveChangesAsync(); 
-        }
+        var specialization = await _categorySpecializationRepository.GetByIdAsync(specializationId, cancellationToken);
+        if (specialization is null)
+            return Result.Failure(Error.NoData);
+
+        _categorySpecializationRepository.Delete(specialization);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return Result.Success();
     }
 
-    public Task<List<Specialization>> GetAllSpecializationsAsync()
+    public async Task<Result<Specialization>> GetSpecializationByIdAsync(
+        int specializationId,
+        CancellationToken cancellationToken)
     {
-        return _categorySpecializationRepository.GetAllAsync();
+        var specialization = await _categorySpecializationRepository.GetByIdAsync(specializationId, cancellationToken);
+        if (specialization is null)
+            return Result.Failure<Specialization>(Error.NoData);
+
+        return Result.Success(specialization);
     }
 
-    public async Task<Specialization> GetSpecializationByIdAsync(int specializationId)
+    public async Task<Result<IReadOnlyList<Specialization>>> GetAllSpecializationsAsync(
+        CancellationToken cancellationToken)
     {
-        var specialization = await _categorySpecializationRepository.GetByIdAsync(specializationId);
-        if (specialization == null)
-        {
-            throw new Exception("Specialization not found");
-        }
-        return specialization;
+        var specializations = await _categorySpecializationRepository.GetAllAsync(cancellationToken);
+        if (specializations is null || specializations.Count == 0)
+            return Result.Failure<IReadOnlyList<Specialization>>(Error.NoData);
+
+        return Result.Success(specializations);
     }
 }

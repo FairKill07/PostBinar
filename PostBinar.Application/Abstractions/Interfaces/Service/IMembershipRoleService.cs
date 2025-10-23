@@ -1,11 +1,22 @@
-﻿using PostBinar.Domain.Enums;
+﻿using PostBinar.Domain.Abstraction;
+using PostBinar.Domain.Enums;
 using PostBinar.Domain.ProjectMemberships;
 
 namespace PostBinar.Application.Abstractions.Interfaces.Service;
 
 public interface IMembershipRoleService
 {
-    Task AssignRoleAsync(ProjectMembershipId membershipId, Role role);
-    Task RemoveRoleAsync(ProjectMembershipId membershipId, Role role);
-    Task GetRolesForMembershipAsync(ProjectMembershipId projectMembershipId);
+    Task<Result> AssignRoleAsync(
+        ProjectMembershipId membershipId, 
+        Role role,
+        CancellationToken cancellationToken);
+
+    Task<Result> RemoveRoleAsync(
+        ProjectMembershipId membershipId, 
+        Role role,
+        CancellationToken cancellationToken);
+
+    Task<Result<IEnumerable<ProjectMembership>>> GetRolesForMembershipAsync(
+        ProjectMembershipId projectMembershipId,
+        CancellationToken cancellationToken);
 }

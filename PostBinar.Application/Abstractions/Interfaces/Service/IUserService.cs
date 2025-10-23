@@ -11,7 +11,11 @@ public interface IUserService
         string lastName, 
         string email, 
         string password, 
-        int specializationId);
+        int specializationId,
+        CancellationToken cancellationToken);
 
-    Task<Result<AccessTokenResponse>> Login(string email, string password);
+    Task<Result<AccessTokenResponse>> Login(
+        string email, 
+        string password, 
+        CancellationToken cancellationToken);
 }

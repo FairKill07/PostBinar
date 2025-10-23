@@ -22,9 +22,9 @@ public sealed class UserService : IUserService
         _jwtProvider = jwtProvider;
     }
 
-    public async Task<Result<AccessTokenResponse>> Login(string email, string password)
+    public async Task<Result<AccessTokenResponse>> Login(string email, string password, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByEmailAsync(email);
+        var user = await _userRepository.GetByEmailAsync(email,cancellationToken);
         if (user == null)
             return Result.Failure<AccessTokenResponse>(UserErrors.NotFound);
 
@@ -37,7 +37,7 @@ public sealed class UserService : IUserService
         return token;
     }
 
-    public async Task<Result<UserId>> Register(string firstName, string lastName, string email, string password, int specializationId)
+    public async Task<Result<UserId>> Register(string firstName, string lastName, string email, string password, int specializationId, CancellationToken cancellationToken)
     {
         var hashPassword = _passwordHasher.HashPasssword(password);
 
@@ -54,7 +54,7 @@ public sealed class UserService : IUserService
         {
             _userRepository.Add(user);
 
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return user.Id;
         }

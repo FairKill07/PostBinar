@@ -1,70 +1,88 @@
-﻿using PostBinar.Application.Abstractions.Interfaces.Repositories;
-using PostBinar.Application.Abstractions.Interfaces;
+﻿using PostBinar.Application.Abstractions.Interfaces;
+using PostBinar.Application.Abstractions.Interfaces.Repositories;
 using PostBinar.Application.Abstractions.Interfaces.Service;
+using PostBinar.Domain.Abstraction;
 using PostBinar.Domain.Projects;
 using PostBinar.Domain.Users;
 
-namespace PostBinar.Application.Services
+namespace PostBinar.Application.Services;
+
+public sealed class ProjectService : IProjectService
 {
-    public sealed class ProjectService : IProjectService
+    private readonly IProjectRepository _projectRepository;
+    private readonly IUnitOfWork _unitOfWork;
+
+    public ProjectService(IProjectRepository projectRepository, IUnitOfWork unitOfWork)
     {
-        private readonly IProjectRepository _projectRepository;
-        private readonly IUnitOfWork _unitOfWork;
+        _projectRepository = projectRepository;
+        _unitOfWork = unitOfWork;
+    }
 
-        public ProjectService(IProjectRepository projectRepository, IUnitOfWork unitOfWork)
-        {
-            _projectRepository = projectRepository;
-            _unitOfWork = unitOfWork;
-        }
+    public async Task<Result<ProjectId>> CreateProjectAsync(
+        string name,
+        string description,
+        UserId ownerId,
+        CancellationToken cancellationToken)
+    {
+        var projectResult = Project.Create(name, description, ownerId);
+        if (projectResult.IsFailure)
+            return Result.Failure<ProjectId>(projectResult.Error);
 
-        public async Task<ProjectId> CreateProjectAsync(string name, string description, UserId ownerId)
-        {
-            var project = Project.Create(name, description, ownerId);
+        var project = projectResult.Value;
 
-            _projectRepository.Add(project.Value);
-            
-            await _unitOfWork.SaveChangesAsync();
+        _projectRepository.Add(project);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return project.Value.Id;
-        }
-        public async Task<Project> UpdateProjectAsync(UserId ownerId, ProjectId projectId, string name, string description)
-        {
-            var project = await _projectRepository.GetByIdAsync(projectId);
+        return project.Id;
+    }
 
-            if (project is null)
-                throw new KeyNotFoundException($"Project with id {projectId} not found.");
+    public async Task<Result<Project>> UpdateProjectAsync(
+        UserId ownerId,
+        ProjectId projectId,
+        string name,
+        string description,
+        CancellationToken cancellationToken)
+    {
+        var project = await _projectRepository.GetByIdAsync(projectId, cancellationToken);
+        if (project is null)
+            return Result.Failure<Project>(ProjectErrors.NotFound);
 
-            if (!project.IsOwner(ownerId))
-                throw new InvalidOperationException("Only the project owner can update the project.");
+        if (!project.IsOwner(ownerId))
+            return Result.Failure<Project>(ProjectErrors.CannotRemoveOwner);
 
-            project.Update(name, description);
+        var updateResult = project.Update(name, description);
+        if (updateResult.IsFailure)
+            return Result.Failure<Project>(updateResult.Error);
 
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await _unitOfWork.SaveChangesAsync();
+        return project;
+    }
 
-            return project;
-        }
-        public async Task Deactivate(ProjectId projectId)
-        {
-            var project = await _projectRepository.GetByIdAsync(projectId);
-            
-            if (project is null)
-                throw new KeyNotFoundException($"Project with id {projectId} not found.");
-            
-            project.Deactivate();
-            
-            await _unitOfWork.SaveChangesAsync();
-        }
-        public async Task DeleteProject(ProjectId projectId)
-        {
-            var project = await _projectRepository.GetByIdAsync(projectId);
+    public async Task<Result> Deactivate(ProjectId projectId, CancellationToken cancellationToken)
+    {
+        var project = await _projectRepository.GetByIdAsync(projectId, cancellationToken);
+        if (project is null)
+            return Result.Failure(ProjectErrors.NotFound);
 
-            if (project is null)
-                throw new KeyNotFoundException($"Project with id {projectId} not found.");
+        var deactivateResult = project.Deactivate();
+        if (deactivateResult.IsFailure)
+            return Result.Failure(deactivateResult.Error);
 
-            _projectRepository.Delete(project);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            await _unitOfWork.SaveChangesAsync();
-        }
+        return Result.Success();
+    }
+
+    public async Task<Result> DeleteProject(ProjectId projectId, CancellationToken cancellationToken)
+    {
+        var project = await _projectRepository.GetByIdAsync(projectId, cancellationToken);
+        if (project is null)
+            return Result.Failure(ProjectErrors.NotFound);
+
+        _projectRepository.Delete(project);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        return Result.Success();
     }
 }

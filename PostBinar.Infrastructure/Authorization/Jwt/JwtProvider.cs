@@ -37,7 +37,7 @@ public sealed class JwtProvider : IJwtProvider
 
         var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
-        return new AccessTokenResponse(tokenString);
+        return new AccessTokenResponse(tokenString,_options.TokenExpirationInHours);
     }
 
 

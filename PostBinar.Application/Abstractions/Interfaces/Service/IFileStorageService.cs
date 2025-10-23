@@ -1,4 +1,6 @@
-﻿using PostBinar.Domain.Enums;
+﻿using PostBinar.Application.Common.Models.FileStorage;
+using PostBinar.Domain.Abstraction;
+using PostBinar.Domain.Enums;
 using PostBinar.Domain.FileStorages;
 using PostBinar.Domain.Projects;
 
@@ -16,15 +18,16 @@ public interface IFileStorageService
         long size,
         CancellationToken cancellationToken);
 
-    Task<string> GetFileDownloadUrlAsync(
+    Task<Result<FileUrlResponse>> GetFileDownloadUrlAsync(
         FileStorageId fileStorageId,
         CancellationToken cancellationToken);
 
-    Task<bool> DeleteFileAsync(
+    Task<Result> DeleteFileAsync(
         FileStorageId fileStorageId,
         CancellationToken cancellationToken);
 
-    Task<List<FileStorage>> GetFilesByObjectAsync(
+    Task<Result<IReadOnlyList<FileStorage>>> GetFilesByObjectAsync(
         Guid objectId,
-        StorageObjectType storageObjectType);
+        StorageObjectType storageObjectType,
+        CancellationToken cancellationToken);
 }

@@ -19,45 +19,60 @@ public sealed class TasksService : ITasksService
         _tasksRepository = tasksRepository;
         _unitOfWork = unitOfWork;
     }
-    
-    public async Task<Result<TaskItemId>> CreateTaskAsync(ProjectId projectId, UserId authorId, int? categoryId, string title, string? description, DateTimeOffset? deadline, TaskItemStatus status, TaskItemPriority priority)
+
+    public async Task<Result<TaskItemId>> CreateTaskAsync(
+        ProjectId projectId,
+        UserId authorId,
+        int? categoryId,
+        string title,
+        string? description,
+        DateTimeOffset? deadline,
+        TaskItemStatus status,
+        TaskItemPriority priority,
+        CancellationToken cancellationToken)
     {
-        Result<TaskItem> result = TaskItem.Create(projectId, authorId, categoryId, title, description, deadline, status, priority);
+        var result = TaskItem.Create(projectId, authorId, categoryId, title, description, deadline, status, priority);
         if (result.IsFailure)
             return Result.Failure<TaskItemId>(result.Error);
 
-        TaskItem taskItem = result.Value;
+        var taskItem = result.Value;
+
         _tasksRepository.Add(taskItem);
-        
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return taskItem.Id;
     }
 
-    public async Task<Result> DeleteTaskAsync(TaskItem task)
+    public async Task<Result> DeleteTaskAsync(TaskItem task, CancellationToken cancellationToken)
     {
+        if (task is null)
+            return Result.Failure(TaskErrors.NotFound);
+
         _tasksRepository.Delete(task);
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+
         return Result.Success();
     }
 
-    public async Task<List<TaskItem>> GetAllTasksAsync(ProjectId projectId)
+    public async Task<Result<IReadOnlyList<TaskItem>>> GetAllTasksAsync(
+        ProjectId projectId,
+        CancellationToken cancellationToken)
     {
-        var tasks = await _tasksRepository.GetAllTasksAsync(projectId);
-
+        var tasks = await _tasksRepository.GetAllTasksAsync(projectId, cancellationToken);
+        
         var activeTasks = tasks.Where(t => t.IsActive).ToList();
 
         return activeTasks;
     }
 
-    public async Task<TaskItem?> GetTaskByIdAsync(TaskItemId taskItemId)
+    public async Task<Result<TaskItem?>> GetTaskByIdAsync(
+        TaskItemId taskItemId,
+        CancellationToken cancellationToken)
     {
-        var task = await _tasksRepository.GetTaskByIdAsync(taskItemId);
-        
-        if (task == null || !task.IsActive)
-        {
-            return null;
-        }
+        var task = await _tasksRepository.GetTaskByIdAsync(taskItemId, cancellationToken);
+
+        if (task is null || !task.IsActive)
+            return Result.Failure<TaskItem?>(TaskErrors.NotFound);
 
         return task;
     }
@@ -69,19 +84,19 @@ public sealed class TasksService : ITasksService
         int? categoryId,
         TaskItemStatus status,
         TaskItemPriority priority,
-        DateTimeOffset? deadline)
+        DateTimeOffset? deadline,
+        CancellationToken cancellationToken)
     {
-        var task = await _tasksRepository.GetTaskByIdAsync(taskId);
+        var task = await _tasksRepository.GetTaskByIdAsync(taskId, cancellationToken);
         if (task is null)
             return Result.Failure(TaskErrors.NotFound);
 
-        Result result = task.Update(title, description, categoryId, status, priority, deadline);
-        if (result.IsFailure)
-            return Result.Failure(result.Error);
+        var updateResult = task.Update(title, description, categoryId, status, priority, deadline);
+        if (updateResult.IsFailure)
+            return Result.Failure(updateResult.Error);
 
-        await _unitOfWork.SaveChangesAsync();
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
 
         return Result.Success();
     }
-
 }
