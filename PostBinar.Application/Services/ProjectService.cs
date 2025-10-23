@@ -45,14 +45,14 @@ public sealed class ProjectService : IProjectService
     {
         var project = await _projectRepository.GetByIdAsync(projectId, cancellationToken);
         if (project is null)
-            return Result.Failure<Project>(ProjectErrors.NotFound);
+            return Result.Failure(ProjectErrors.NotFound);
 
         if (!project.IsOwner(ownerId))
-            return Result.Failure<Project>(ProjectErrors.CannotRemoveOwner);
+            return Result.Failure(ProjectErrors.CannotRemoveOwner);
 
         var updateResult = project.Update(name, description);
         if (updateResult.IsFailure)
-            return Result.Failure<Project>(updateResult.Error);
+            return Result.Failure(updateResult.Error);
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 

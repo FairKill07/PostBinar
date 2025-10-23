@@ -28,6 +28,9 @@ public sealed class UploadFileCommandHandler : IRequestHandler<UploadFileCommand
 
         if (uploadResult is null)
             return Result.Failure<FileStorageId>(Error.Unexpected);
+       
+        if (uploadResult.IsFailure)
+            return Result.Failure<FileStorageId>(uploadResult.Error);
 
         return Result.Success(uploadResult.Value.Id);
     }
