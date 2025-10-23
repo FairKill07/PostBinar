@@ -423,6 +423,19 @@ namespace PostBinar.Persistence.Migrations
                     b.ToTable("projects", (string)null);
                 });
 
+            modelBuilder.Entity("PostBinar.Domain.TaskItems.AssingTask", b =>
+                {
+                    b.Property<Guid>("TaskItemId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("TaskItemId");
+
+                    b.ToTable("assing_tasks", (string)null);
+                });
+
             modelBuilder.Entity("PostBinar.Domain.TaskItems.TaskItem", b =>
                 {
                     b.Property<Guid>("Id")
