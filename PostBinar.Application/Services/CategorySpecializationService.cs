@@ -26,8 +26,8 @@ public sealed class CategorySpecializationService : ICategorySpecializationServi
     {
         var specialization = new Specialization
         {
-            Name = name,
-            ColorCode = colorCode
+            Name = name.Trim(),
+            ColorCode = colorCode.Trim()
         };
 
         _categorySpecializationRepository.Add(specialization);
@@ -65,9 +65,10 @@ public sealed class CategorySpecializationService : ICategorySpecializationServi
         CancellationToken cancellationToken)
     {
         var specializations = await _categorySpecializationRepository.GetAllAsync(cancellationToken);
+
         if (specializations is null || specializations.Count == 0)
             return Result.Failure<IReadOnlyList<Specialization>>(Error.NoData);
 
-        return Result.Success(specializations);
+        return Result.Success<IReadOnlyList<Specialization>>(specializations);
     }
 }

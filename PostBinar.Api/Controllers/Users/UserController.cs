@@ -47,9 +47,6 @@ namespace PostBinar.Api.Controllers.Users
 
             var cookieOptions = new CookieOptions
             {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Lax,
                 Expires = DateTimeOffset.UtcNow.AddHours(token.Value.ExpiresIn)
             };
 
