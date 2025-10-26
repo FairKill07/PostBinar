@@ -5,7 +5,7 @@ namespace PostBinar.Application.FileStorages.Queries.GetFilesByObject
 {
     public sealed class FileLookUpDto : IMapWith<FileStorage>
     {
-        public required Guid FileSorageId { get; set; }
+        public required Guid FileStorageId { get; set; }
         public required string FileName { get; set; }
         public required string MimeType { get; set; }
         public required long Size { get; set; }
@@ -13,7 +13,7 @@ namespace PostBinar.Application.FileStorages.Queries.GetFilesByObject
 
         public void Mapping(AutoMapper.Profile profile) =>
             profile.CreateMap<FileStorage, FileLookUpDto>()
-                .ForMember(dto => dto.FileSorageId,
+                .ForMember(dto => dto.FileStorageId,
                     opt => opt.MapFrom(f => f.Id.Value))
                 .ForMember(dto => dto.FileName,
                     opt => opt.MapFrom(f => f.FileName))
