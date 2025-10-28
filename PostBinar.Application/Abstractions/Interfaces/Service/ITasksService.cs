@@ -40,4 +40,9 @@ public  interface ITasksService
     Task<Result> DeleteTaskAsync(
         TaskItem taskId,
         CancellationToken cancellationToken);
+
+    Task<Result> AssignTaskToUserAsync(
+        TaskItemId taskId,
+        UserId userId,
+        CancellationToken cancellationToken);
 }

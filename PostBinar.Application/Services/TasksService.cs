@@ -13,11 +13,13 @@ public sealed class TasksService : ITasksService
 {
     private readonly ITasksRepository _tasksRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ITasksMemberRepository _tasksMemberRepository;
 
-    public TasksService(ITasksRepository tasksRepository, IUnitOfWork unitOfWork)
+    public TasksService(ITasksRepository tasksRepository, IUnitOfWork unitOfWork, ITasksMemberRepository tasksMemberRepository)
     {
         _tasksRepository = tasksRepository;
         _unitOfWork = unitOfWork;
+        _tasksMemberRepository = tasksMemberRepository;
     }
 
     public async Task<Result<TaskItemId>> CreateTaskAsync(
@@ -97,6 +99,23 @@ public sealed class TasksService : ITasksService
 
         await _unitOfWork.SaveChangesAsync(cancellationToken);
 
+        return Result.Success();
+    }
+
+    public async Task<Result> AssignTaskToUserAsync(
+        TaskItemId taskId,
+        UserId userId,
+        CancellationToken cancellationToken)
+    {
+        var result = TaskMember.Create(taskId, userId);
+        if (result.IsFailure)
+            return Result.Failure(result.Error);
+
+        var taskAssing = result.Value;
+
+        _tasksMemberRepository.Add(taskAssing);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        
         return Result.Success();
     }
 }

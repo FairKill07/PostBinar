@@ -15,23 +15,23 @@ public sealed class TaskMember
     public TaskItemId TaskId { get; private set; }
     public UserId UserId { get; private set; }
     
-    public static Result Create(
+    public static Result<TaskMember> Create(
         TaskItemId taskId,
         UserId userId)
     {
         if (taskId == TaskItemId.Empty)
         {
-            return Result.Failure(Error.NullValue);
+            return Result.Failure<TaskMember>(Error.NullValue);
         }
         if (userId == UserId.Empty)
         {
-            return Result.Failure(Error.NullValue);
+            return Result.Failure<TaskMember>(Error.NullValue);
         }
         
         var taskMember = new TaskMember(
             taskId,
             userId);
 
-        return Result.Success();
+        return taskMember;
     }
 }

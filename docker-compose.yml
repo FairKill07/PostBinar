@@ -1,0 +1,34 @@
+﻿version: '3.9'
+
+services:
+  # ==========================
+  # ASP.NET Core API (PostBinar)
+  # ==========================
+  postbinar-api:
+    image: fairkill07/postbinar-api:latest
+    build:
+      context: .
+      dockerfile: PostBinar.Api/Dockerfile
+    container_name: ${API_CONTAINER_NAME}
+    ports:
+      - "${API_PORT_HTTP}:8080"
+      - "${API_PORT_HTTPS}:8081"
+    environment:
+      # Database
+      ConnectionStrings__DbConnection: "User ID=${DB_USER};Password=${DB_PASSWORD};Host=${DB_HOST};Port=${DB_PORT};Database=${DB_NAME}"
+
+      # JWT
+      JwtOptions__SecretKey: ${JWT_SECRET_KEY}
+      JwtOptions__TokenExpirationInHours: ${JWT_EXPIRATION_HOURS}
+
+      # MinIO
+      MinioOptions__Endpoint: "${MINIO_HOST}:${MINIO_API_PORT}"
+      MinioOptions__AccessKey: ${MINIO_ROOT_USER}
+      MinioOptions__SecretKey: ${MINIO_ROOT_PASSWORD}
+      MinioOptions__Bucket: ${MINIO_BUCKET}
+      MinioOptions__WithSSL: ${MINIO_WITH_SSL}
+      MinioOptions__DownloadExpirySeconds: ${MINIO_EXPIRY_SECONDS}
+
+      # ASP.NET Core
+      ASPNETCORE_URLS: "http://+:8080"
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}

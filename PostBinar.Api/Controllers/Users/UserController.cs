@@ -47,7 +47,7 @@ namespace PostBinar.Api.Controllers.Users
 
             var cookieOptions = new CookieOptions
             {
-                Expires = DateTimeOffset.UtcNow.AddHours(token.Value.ExpiresIn)
+                Expires = DateTimeOffset.UtcNow.AddHours(token.Value.ExpiresIn),
             };
 
             HttpContext.Response.Cookies.Append("Cookies-PostBinar", token.Value.AccessToken, cookieOptions);

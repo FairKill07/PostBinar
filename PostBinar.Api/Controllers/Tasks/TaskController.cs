@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using PostBinar.Application.Tasks.Commands.AssignTask;
 using PostBinar.Application.Tasks.Commands.CreateTask;
 using PostBinar.Domain.Enums;
 using PostBinar.Domain.Projects;
@@ -34,6 +35,18 @@ namespace PostBinar.Api.Controllers.Tasks
             );
             var taskId = await _mediator.Send(command, cancellationToken);
             return HandleResult(taskId);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AssignTaskToUser([FromBody] AssignTaskRequest request, CancellationToken cancellationToken)
+        {
+            var command = new AssignTaskCommand(
+                TaskItemId: request.TaskItemId,
+                UserId: request.UserId,
+                cancellationToken
+            );
+            var result = await _mediator.Send(command, cancellationToken);
+            return HandleResult(result);
         }
     }
 }
