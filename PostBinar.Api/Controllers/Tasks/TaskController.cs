@@ -4,6 +4,7 @@ using PostBinar.Application.Tasks.Commands.AssignTask;
 using PostBinar.Application.Tasks.Commands.CreateTask;
 using PostBinar.Domain.Enums;
 using PostBinar.Domain.Projects;
+using PostBinar.Domain.TaskItems;
 using PostBinar.Domain.Users;
 
 namespace PostBinar.Api.Controllers.Tasks
@@ -41,8 +42,8 @@ namespace PostBinar.Api.Controllers.Tasks
         public async Task<IActionResult> AssignTaskToUser([FromBody] AssignTaskRequest request, CancellationToken cancellationToken)
         {
             var command = new AssignTaskCommand(
-                TaskItemId: request.TaskItemId,
-                UserId: request.UserId,
+                TaskItemId: new TaskItemId (request.TaskItemId),
+                UserId: new UserId(request.UserId),
                 cancellationToken
             );
             var result = await _mediator.Send(command, cancellationToken);

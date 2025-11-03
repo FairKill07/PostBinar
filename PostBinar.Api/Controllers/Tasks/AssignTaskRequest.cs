@@ -3,4 +3,4 @@ using PostBinar.Domain.Users;
 
 namespace PostBinar.Api.Controllers.Tasks;
 
-public sealed record AssignTaskRequest (TaskItemId TaskItemId, UserId UserId);
+public sealed record AssignTaskRequest (Guid TaskItemId, Guid UserId);

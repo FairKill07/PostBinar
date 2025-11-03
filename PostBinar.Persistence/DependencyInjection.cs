@@ -22,9 +22,9 @@ public static class DependencyInjection
         services.AddTransient<IFileStorageRepository, FileStorageRepository>();
         services.AddTransient<INoteRepository, NoteRepository>();
         services.AddTransient<ITasksRepository, TasksRepository>();
+        services.AddTransient<ITasksMemberRepository, TaskMemberRepository>();
 
-        var connectionString = configuration.GetConnectionString("DbConnection")
-                ?? throw new InvalidOperationException("Connection string 'DbConnection' not found.");
+        var connectionString = configuration.GetConnectionString("DbConnection")!;
 
         services.AddDbContext<PostBinarDbContext>(options =>
         {

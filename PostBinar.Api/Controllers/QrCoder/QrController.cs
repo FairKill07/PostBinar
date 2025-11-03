@@ -16,9 +16,9 @@ namespace Api.Controllers
             _mediator = mediator;
         }
         [HttpGet]
-        public async Task<byte[]> GenerateQr([FromQuery] string text, [FromQuery] int size = 10)
+        public async Task<byte[]> GenerateQr([FromQuery] Guid FileId, [FromQuery] int size = 10)
         {
-            var qrBytes = await _mediator.Send(new GenerateQrCodeCommand(text, size));
+            var qrBytes = await _mediator.Send(new GenerateQrCodeCommand(FileId, size));
             return qrBytes;
         }
     }

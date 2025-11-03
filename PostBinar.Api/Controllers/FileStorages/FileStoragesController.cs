@@ -5,6 +5,7 @@ using PostBinar.Application.FileStorages.Queries.GetFileDownloadUrl;
 using PostBinar.Application.FileStorages.Queries.GetFilesByObject;
 using PostBinar.Domain.Enums;
 using PostBinar.Domain.FileStorages;
+using PostBinar.Domain.Projects;
 
 namespace PostBinar.Api.Controllers.FileStorages;
 
@@ -25,7 +26,7 @@ public sealed class FileStoragesController : BaseController
     {
         var file = request.File;
         var command = new UploadFileCommand(
-            ProjectId: request.ProjectId,
+            ProjectId: new ProjectId(request.ProjectId),
             ObjectId: request.ObjectId,
             FileStream: file.OpenReadStream(),
             StorageObjectType: type,
